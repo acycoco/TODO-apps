@@ -1,14 +1,13 @@
 package com.example.todo.api;
 
 import com.example.todo.exception.ErrorCode;
-import com.example.todo.exception.TodoException;
+import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -22,7 +21,7 @@ public class TaskApiService {
         //해당 Id를 가진 Entity가 존재하는지?
         Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(id);
         if (optionalTaskApiEntity.isEmpty())
-            throw new TodoException(ErrorCode.NOT_FOUND_TEAM);
+            throw new TodoAppException(ErrorCode.NOT_FOUND_TEAM);
         return optionalTaskApiEntity.get();
     }
 
@@ -52,7 +51,7 @@ public class TaskApiService {
         Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(taskId);
         if (optionalTaskApiEntity.isPresent())
             return TaskApiDto.fromEntity(optionalTaskApiEntity.get());
-        else throw new TodoException(ErrorCode.NOT_FOUND_TASK);
+        else throw new TodoAppException(ErrorCode.NOT_FOUND_TASK);
     }
 
     public Page<TaskApiDto> readTasksAll(Long teamId, Integer page, Integer limit) {
@@ -70,7 +69,7 @@ public class TaskApiService {
         TaskApiEntity taskApiEntity = getTeamById(taskId);
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeamId()))
-            throw new TodoException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
+            throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
         //맞다면 진행
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
         taskApiRepository.save(taskApiEntity);
@@ -82,7 +81,7 @@ public class TaskApiService {
         TaskApiEntity taskApiEntity = getTeamById(taskId);
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeamId()))
-            throw new TodoException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
+            throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
         //맞다면 진행
         taskApiRepository.deleteById(taskApiEntity.getId());
         return new ResponseDto("업무를 삭제했습니다.");
