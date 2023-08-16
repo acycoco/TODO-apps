@@ -2,6 +2,8 @@ package com.example.todo.api.todo;
 
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TodoApiDto;
+import com.example.todo.exception.ErrorCode;
+import com.example.todo.exception.TodoAppException;
 import com.example.todo.service.todo.TodoApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,43 +29,34 @@ public class TodoApiController {
     }
 
     //특정 유저 Todo 목록 조회
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public Page<TodoApiDto> readAll(
             @PathVariable("userId") Long userId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
         return service.readUserTodoAll(userId, page, limit);
     }
-    //수정
+    //Todo 수정
     @PutMapping("/{todoId}")
     public ResponseDto update(
             @PathVariable("todoId") Long todoId,
             @RequestBody TodoApiDto todoApiDto) {
         return service.updateTodo(todoId, todoApiDto);
     }
+    //Todo 삭제
     @DeleteMapping("/{todoId}")
     public ResponseDto delete(@PathVariable("todoId") Long todoId, @RequestBody TodoApiDto todoApiDto) {
         return service.deleteTodo(todoId, todoApiDto);
     }
-    @PostMapping("/{todoId}/like")
-    public ResponseEntity<String> likeTodo(@PathVariable Long todoId) {
-        // TodoService를 이용하여 해당 todoId에 해당하는 todo에 좋아요를 추가하는 로직 호출
-        boolean success = service.likeTodoById(todoId);
-
-        if (success) {
-            return ResponseEntity.ok("좋아요를 눌렀습니다.");
-        } else {
-            return ResponseEntity.badRequest().body("좋아요 실패");
-        }
-    }
-    @PostMapping("/{todoId}/unlike")
-    public ResponseEntity<String> unlikeTodo(@PathVariable Long todoId) {
-        boolean success = service.unlikeTodoById(todoId);
-
-        if (success) {
-            return ResponseEntity.ok("좋아요를 취소했습니다.");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to unlike the todo.");
+    //Todo 좋아요 추가, 취소 기능
+    @PostMapping("/{todoId}/toggleLike")
+    public ResponseEntity<ResponseDto> toggleLikeTodo(@PathVariable Long todoId) {
+        try {
+            ResponseDto responseDto = service.toggleLikeTodoById(todoId);
+            return ResponseEntity.ok(responseDto);
+        } catch (TodoAppException e) {
+            throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
         }
     }
 }
+
