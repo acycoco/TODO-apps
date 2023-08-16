@@ -1,6 +1,6 @@
 package com.example.todo.service.task;
 
-import com.example.todo.api.TaskApiEntity;
+import com.example.todo.domain.entity.task.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TaskApiDto;
