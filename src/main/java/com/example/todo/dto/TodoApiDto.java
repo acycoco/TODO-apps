@@ -1,5 +1,6 @@
-package com.example.todo.api;
+package com.example.todo.dto;
 
+import com.example.todo.domain.entity.entity.TodoApiEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

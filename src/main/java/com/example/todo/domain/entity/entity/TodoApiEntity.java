@@ -1,4 +1,4 @@
-package com.example.todo.api;
+package com.example.todo.domain.entity.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

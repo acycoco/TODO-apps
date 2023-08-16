@@ -1,5 +1,8 @@
-package com.example.todo.api;
+package com.example.todo.service;
 
+import com.example.todo.domain.entity.repository.TodoApiRepository;
+import com.example.todo.dto.TodoApiDto;
+import com.example.todo.domain.entity.entity.TodoApiEntity;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Optional;
