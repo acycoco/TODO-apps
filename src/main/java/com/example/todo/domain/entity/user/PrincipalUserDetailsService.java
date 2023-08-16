@@ -1,6 +1,6 @@
 package com.example.todo.domain.entity.user;
 
-import com.example.todo.domain.repository.UserRepository;
+import com.example.todo.domain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
