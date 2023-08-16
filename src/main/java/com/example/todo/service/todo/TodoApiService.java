@@ -56,14 +56,15 @@ public class TodoApiService {
     }
 
     //to do 상세 조회
-    public TodoApiDto readTodo(Long todoId){
+    public TodoApiDto readTodo(Long todoId) {
         Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
-        if(optionalTodoApiEntity.isPresent())
+        if (optionalTodoApiEntity.isPresent())
             return TodoApiDto.fromEntity(optionalTodoApiEntity.get());
         else throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
     }
+
     //특정 유저 to do 목록 조회
-    public Page<TodoApiDto> readUserTodoAll(Long userId, Integer page, Integer limit){
+    public Page<TodoApiDto> readUserTodoAll(Long userId, Integer page, Integer limit) {
         //해당 유저가 존재하는지 확인
         Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(userId);
         if (optionalTodoApiEntity.isEmpty())
@@ -100,35 +101,34 @@ public class TodoApiService {
     }
 
     //to do 삭제
-    public ResponseDto deleteTodo(Long todoId, TodoApiDto todoApiDto){
+    public ResponseDto deleteTodo(Long todoId, TodoApiDto todoApiDto) {
         TodoApiEntity todoApiEntity = getTodoById(todoId);
         todoApiRepository.deleteById(todoApiEntity.getId());
         return new ResponseDto("Todo가 삭제되었습니다.");
     }
-    public boolean likeTodoById(Long todoId) {
+
+    //좋아요 토글 기능
+    public ResponseDto toggleLikeTodoById(Long todoId) {
+        //Todo가 존재하는지 확인
         Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
 
         if (optionalTodoApiEntity.isPresent()) {
             TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
-            //좋아요 +1
-            todoApiEntity.addLike();
-            todoApiRepository.save(todoApiEntity);
-            return true;
+            // 좋아요를 한 번도 누르지 않은 경우
+            if (todoApiEntity.getLikes() == 0) {
+                //좋아요 추가
+                todoApiEntity.addLike();
+                todoApiRepository.save(todoApiEntity);
+                return new ResponseDto("좋아요를 눌렀습니다.");
+            } else {
+                // 이미 좋아요를 누른 경우, 좋아요 취소
+                todoApiEntity.removeLike();
+                todoApiRepository.save(todoApiEntity);
+                return new ResponseDto("좋아요를 취소했습니다.");
+            }
         }
-        return false;
-    }
-
-    public boolean unlikeTodoById(Long todoId) {
-        Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
-
-        if (optionalTodoApiEntity.isPresent()) {
-            TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
-            //좋아요 +1
-            todoApiEntity.removeLike();
-            todoApiRepository.save(todoApiEntity);
-            return true;
-        }
-        return false;
+        throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
     }
 }
+
 
