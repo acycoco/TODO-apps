@@ -1,7 +1,7 @@
 package com.example.todo.api.todo;
 
 import com.example.todo.dto.TodoApiDto;
-import com.example.todo.service.TodoApiService;
+import com.example.todo.service.todo.TodoApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

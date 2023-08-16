@@ -1,8 +1,8 @@
-package com.example.todo.service;
+package com.example.todo.service.todo;
 
-import com.example.todo.domain.entity.repository.TodoApiRepository;
+import com.example.todo.domain.repository.TodoApiRepository;
 import com.example.todo.dto.TodoApiDto;
-import com.example.todo.domain.entity.entity.TodoApiEntity;
+import com.example.todo.domain.entity.TodoApiEntity;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
