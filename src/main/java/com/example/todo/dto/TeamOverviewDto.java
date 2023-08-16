@@ -1,4 +1,4 @@
-package com.example.todo.api;
+package com.example.todo.dto;
 
 public class TeamOverviewDto {
 }

@@ -1,4 +1,4 @@
-package com.example.todo.api;
+package com.example.todo.dto;
 
 import com.example.todo.domain.entity.user.User;
 import lombok.Getter;

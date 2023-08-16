@@ -1,6 +1,14 @@
-package com.example.todo.api;
+package com.example.todo.service.team;
 
+import com.example.todo.domain.entity.MemberEntity;
+import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.user.User;
+import com.example.todo.domain.repository.MemberRepository;
+import com.example.todo.domain.repository.TeamReposiotry;
+import com.example.todo.domain.repository.UserRepository;
+import com.example.todo.dto.TeamCreateDto;
+import com.example.todo.dto.TeamJoinDto;
+import com.example.todo.dto.TeamUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
