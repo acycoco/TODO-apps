@@ -3,6 +3,8 @@ package com.example.todo.api;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name = "todo")
@@ -12,8 +14,8 @@ public class TodoApiEntity {
     private Long id;
     private String title;
     private String content;
-    private String startDate;
-    private String dueDate;
+    private LocalDate startDate;
+    private LocalDate dueDate;
     private String status;
     private int likes = 0;
     public void addLike() {

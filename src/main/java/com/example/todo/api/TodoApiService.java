@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -35,7 +36,17 @@ public class TodoApiService {
         todoApiEntity.setContent(todoApiDto.getContent());
         todoApiEntity.setStartDate(todoApiDto.getStartDate());
         todoApiEntity.setDueDate(todoApiDto.getDueDate());
+        //현재 날짜 추가
+        LocalDate currentDate = LocalDate.now();
+
         todoApiEntity.setStatus("진행중");
+        //현재날짜가 아직 startDate 이전이면 진행예정
+        if (todoApiDto.getStartDate().isAfter(currentDate)) {
+            todoApiEntity.setStatus("진행예정");
+        } // 현재날짜가 dueDate를 지났으면 완료
+        else if (todoApiDto.getDueDate().isBefore(currentDate)) {
+            todoApiEntity.setStatus("완료");
+        }
 
         todoApiRepository.save(todoApiEntity);
 
@@ -71,6 +82,17 @@ public class TodoApiService {
         todoApiEntity.setContent(todoApiDto.getContent());
         todoApiEntity.setStartDate(todoApiDto.getDueDate());
         todoApiEntity.setDueDate(todoApiDto.getDueDate());
+        //현재 날짜 추가
+        LocalDate currentDate = LocalDate.now();
+
+        todoApiEntity.setStatus("진행중");
+        //현재날짜가 아직 startDate 이전이면 진행예정
+        if (todoApiDto.getStartDate().isAfter(currentDate)) {
+            todoApiEntity.setStatus("진행예정");
+        } // 현재날짜가 dueDate를 지났으면 완료
+        else if (todoApiDto.getDueDate().isBefore(currentDate)) {
+            todoApiEntity.setStatus("완료");
+        }
         todoApiRepository.save(todoApiEntity);
         return new ResponseDto("Todo가 수정 되었습니다.");
     }
