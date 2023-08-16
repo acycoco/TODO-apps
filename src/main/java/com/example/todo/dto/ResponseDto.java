@@ -1,12 +1,11 @@
 package com.example.todo.dto;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-@Data
-@RequiredArgsConstructor
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ResponseDto {
-
-    private final String message;
-
+    private String message;
 }
