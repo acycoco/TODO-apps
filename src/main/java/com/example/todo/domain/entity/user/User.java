@@ -1,21 +1,27 @@
 package com.example.todo.domain.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Table(name = "users")
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String username;
+    private String password;
+    private String profileImage;
+    private String phone;
+
+    @Builder
+    public User(final String username, final String password, final String profileImage, final String phone) {
+        this.username = username;
+        this.password = password;
+        this.profileImage = profileImage;
+        this.phone = phone;
+    }
 }
