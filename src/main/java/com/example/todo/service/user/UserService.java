@@ -1,7 +1,7 @@
 package com.example.todo.service.user;
 
 import com.example.todo.domain.entity.user.User;
-import com.example.todo.domain.repository.UserRepository;
+import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.user.request.UserJoinRequestDto;
 import com.example.todo.dto.user.request.UserUpdateRequestDto;
 import com.example.todo.dto.user.response.UserJoinResponseDto;

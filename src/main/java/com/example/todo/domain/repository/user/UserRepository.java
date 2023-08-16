@@ -1,4 +1,4 @@
-package com.example.todo.domain.repository;
+package com.example.todo.domain.repository.user;
 
 import com.example.todo.domain.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

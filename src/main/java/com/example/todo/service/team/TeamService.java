@@ -5,7 +5,7 @@ import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
-import com.example.todo.domain.repository.UserRepository;
+import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.TeamCreateDto;
 import com.example.todo.dto.TeamJoinDto;
 import com.example.todo.dto.TeamUpdateDto;
