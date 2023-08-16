@@ -3,6 +3,8 @@ package com.example.todo.api;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name = "task")
@@ -14,7 +16,7 @@ public class TaskApiEntity {
     private Long userId;
     private String taskName;
     private String taskDesc;
-    private String startDate;
-    private String dueDate;
+    private LocalDate startDate;
+    private LocalDate dueDate;
     private String status;
 }

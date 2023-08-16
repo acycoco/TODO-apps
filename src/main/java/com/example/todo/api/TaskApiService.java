@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 @Slf4j
@@ -37,8 +38,17 @@ public class TaskApiService {
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
         taskApiEntity.setStartDate(taskApiDto.getStartDate());
         taskApiEntity.setDueDate(taskApiDto.getDueDate());
-        taskApiEntity.setStatus("진행중");
+        //현재 날짜 추가
+        LocalDate currentDate = LocalDate.now();
 
+        taskApiEntity.setStatus("진행중");
+        //현재날짜가 아직 startDate 이전이면 진행예정
+        if (taskApiDto.getStartDate().isAfter(currentDate)) {
+            taskApiEntity.setStatus("진행예정");
+        } // 현재날짜가 dueDate를 지났으면 완료
+        else if (taskApiDto.getDueDate().isBefore(currentDate)) {
+            taskApiEntity.setStatus("완료");
+        }
         taskApiRepository.save(taskApiEntity);
         return new ResponseDto("업무가 등록되었습니다.");
     }
@@ -71,7 +81,21 @@ public class TaskApiService {
         if (!teamId.equals(taskApiEntity.getTeamId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
         //맞다면 진행
+        taskApiEntity.setTaskName(taskApiDto.getTaskName());
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
+        taskApiEntity.setStartDate(taskApiDto.getStartDate());
+        taskApiEntity.setDueDate(taskApiDto.getDueDate());
+        //현재 날짜 추가
+        LocalDate currentDate = LocalDate.now();
+
+        taskApiEntity.setStatus("진행중");
+        //현재날짜가 아직 startDate 이전이면 진행예정
+        if (taskApiDto.getStartDate().isAfter(currentDate)) {
+            taskApiEntity.setStatus("진행예정");
+        } // 현재날짜가 dueDate를 지났으면 완료
+        else if (taskApiDto.getDueDate().isBefore(currentDate)) {
+            taskApiEntity.setStatus("완료");
+        }
         taskApiRepository.save(taskApiEntity);
         return new ResponseDto("업무가 수정되었습니다.");
     }

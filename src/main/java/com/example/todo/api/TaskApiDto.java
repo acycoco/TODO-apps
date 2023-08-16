@@ -3,6 +3,8 @@ package com.example.todo.api;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class TaskApiDto {
     private Long id;
@@ -13,9 +15,9 @@ public class TaskApiDto {
     @NotNull(message = "설명을 작성해주세요.")
     private String taskDesc;
     @NotNull(message = "시작일을 입력해주세요")
-    private String startDate;
+    private LocalDate startDate;
     @NotNull(message = "마감일을 작성해주세요.")
-    private String dueDate;
+    private LocalDate dueDate;
     private String status;
 
     public static TaskApiDto fromEntity(TaskApiEntity entity) {
@@ -26,6 +28,7 @@ public class TaskApiDto {
         taskApiDto.setTaskDesc(entity.getTaskDesc());
         taskApiDto.setStartDate(entity.getStartDate());
         taskApiDto.setDueDate(entity.getDueDate());
+        taskApiDto.setStatus(entity.getStatus());
         return taskApiDto;
     }
 }
