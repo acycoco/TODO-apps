@@ -1,7 +1,9 @@
 package com.example.todo.domain.entity.user;
 
+import com.example.todo.domain.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -17,11 +19,16 @@ public class User {
     private String profileImage;
     private String phone;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
-    public User(final String username, final String password, final String profileImage, final String phone) {
+    public User(final String username, final String password, final String profileImage, final String phone,
+                final Role role) {
         this.username = username;
         this.password = password;
         this.profileImage = profileImage;
         this.phone = phone;
+        this.role = role;
     }
 }
