@@ -15,4 +15,13 @@ public class TodoApiEntity {
     private String startDate;
     private String dueDate;
     private String status;
+    private int likes = 0;
+    public void addLike() {
+        this.likes++;
+    }
+    public void removeLike() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
+    }
 }

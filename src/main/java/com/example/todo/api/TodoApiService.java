@@ -81,5 +81,30 @@ public class TodoApiService {
         todoApiRepository.deleteById(todoApiEntity.getId());
         return new ResponseDto("Todo가 삭제되었습니다.");
     }
+    public boolean likeTodoById(Long todoId) {
+        Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
+
+        if (optionalTodoApiEntity.isPresent()) {
+            TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
+            //좋아요 +1
+            todoApiEntity.addLike();
+            todoApiRepository.save(todoApiEntity);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unlikeTodoById(Long todoId) {
+        Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
+
+        if (optionalTodoApiEntity.isPresent()) {
+            TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
+            //좋아요 +1
+            todoApiEntity.removeLike();
+            todoApiRepository.save(todoApiEntity);
+            return true;
+        }
+        return false;
+    }
 }
 
