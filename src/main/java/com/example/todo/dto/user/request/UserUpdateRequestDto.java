@@ -12,10 +12,10 @@ public class UserUpdateRequestDto {
 
     private String password;
     private String phone;
-    private MultipartFile profileImage;
+    private String profileImage;
 
     @Builder
-    public UserUpdateRequestDto(final String password, final String phone, final MultipartFile profileImage) {
+    public UserUpdateRequestDto(final String password, final String phone, final String profileImage) {
         this.password = password;
         this.phone = phone;
         this.profileImage = profileImage;
