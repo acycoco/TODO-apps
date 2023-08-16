@@ -35,4 +35,23 @@ class UserRepositoryTest {
 
     }
 
+    @DisplayName("findByUsername() 메서드 테스트")
+    @Test
+    void findByUsername() {
+        // given
+        final String username = "아이디";
+        User user = User.builder()
+                .username(username)
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        // when
+        User findUser = userRepository.findByUsername(username).get();
+
+        // then
+        assertThat(findUser.getUsername()).isEqualTo(username);
+
+    }
+
 }
