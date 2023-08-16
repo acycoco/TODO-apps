@@ -16,7 +16,7 @@ import java.util.Optional;
 public class TaskApiService {
     private final TaskApiRepository taskApiRepository;
 
-    //조직,업무가 존재하는지 확인하는 메소드
+    //조직이 존재하는지 확인하는 메소드
     public TaskApiEntity getTeamById(Long id) {
         //해당 Id를 가진 Entity가 존재하는지?
         Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(id);
