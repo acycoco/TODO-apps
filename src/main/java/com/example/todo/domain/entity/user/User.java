@@ -1,6 +1,7 @@
 package com.example.todo.domain.entity.user;
 
 import com.example.todo.domain.entity.enums.Role;
+import com.example.todo.dto.user.request.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +31,11 @@ public class User {
         this.profileImage = profileImage;
         this.phone = phone;
         this.role = role;
+    }
+
+    public void updateProfile(final UserUpdateRequestDto updateDto, final String password, final String profileImage) {
+        this.password = password;
+        this.phone = updateDto.getPhone();
+        this.profileImage = profileImage;
     }
 }
