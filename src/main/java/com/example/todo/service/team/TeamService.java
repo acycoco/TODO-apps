@@ -11,7 +11,6 @@ import com.example.todo.dto.TeamJoinDto;
 import com.example.todo.dto.TeamUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,9 +23,9 @@ public class TeamService {
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
 
-    public void createTeam(Authentication authentication, TeamCreateDto teamCreateDto) {
-        long tempUserId = 4;
-        Optional<User> optionalUser = userRepository.findById(tempUserId); //authentication 으로 대체
+    public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
+
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
 
         User manager = optionalUser.get();
@@ -39,9 +38,8 @@ public class TeamService {
 
     }
 
-    public void joinTeam(Authentication authentication, TeamJoinDto teamJoinDto, Long teamId) {
-        long tempUserId = 4;
-        Optional<User> optionalUser = userRepository.findById(tempUserId); //authentication 으로 대체
+    public void joinTeam(Long userId, TeamJoinDto teamJoinDto, Long teamId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
         User user = optionalUser.get();
 
@@ -61,9 +59,8 @@ public class TeamService {
 
     }
 
-    public void updateTeamDetails(Authentication authentication, TeamUpdateDto teamUpdateDto, Long teamId) {
-        long tempUserId = 4;
-        Optional<User> optionalUser = userRepository.findById(tempUserId); //authentication 으로 대체
+    public void updateTeamDetails(Long userId, TeamUpdateDto teamUpdateDto, Long teamId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
         User user = optionalUser.get();
 
@@ -94,9 +91,9 @@ public class TeamService {
 
     }
 
-    public void deleteTeam(Authentication authentication, Long teamId) {
-        long tempUserId = 4;
-        Optional<User> optionalUser = userRepository.findById(tempUserId); //authentication 으로 대체
+    public void deleteTeam(Long userId, Long teamId) {
+
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
         User user = optionalUser.get();
 
@@ -109,9 +106,8 @@ public class TeamService {
         teamReposiotry.delete(team);
     }
 
-    public void leaveTeam(Authentication authentication, Long teamId) {
-        long tempUserId = 4;
-        Optional<User> optionalUser = userRepository.findById(tempUserId); //authentication 으로 대체
+    public void leaveTeam(Long userId, Long teamId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
         User user = optionalUser.get();
 
@@ -121,7 +117,7 @@ public class TeamService {
 
 
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findByTeamAndUser(team, user);
-        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀에 가입X");
+        if (optionalMemberEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀에 가입X");
         MemberEntity member = optionalMemberEntity.get();
 
         team.getMember().remove(member);
