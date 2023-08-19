@@ -29,7 +29,8 @@ public class TeamController {
     @PostMapping
     public ResponseDto createTeam(Authentication authentication,
                                   @Valid TeamCreateDto teamCreateDto) {
-        teamService.createTeam(authentication, teamCreateDto);
+        Long userId = Long.parseLong(authentication.getName());
+        teamService.createTeam(userId, teamCreateDto);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("새로운 팀 등록이 완료되었습니다.");
@@ -42,8 +43,8 @@ public class TeamController {
     public ResponseDto joinTeam(Authentication authentication,
                                 @Valid TeamJoinDto teamJoinDto,
                                 @PathVariable("teamId") Long teamId) {
-
-        teamService.joinTeam(authentication, teamJoinDto, teamId);
+        Long userId = Long.parseLong(authentication.getName());
+        teamService.joinTeam(userId, teamJoinDto, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀에 가입이 완료되었습니다.");
@@ -55,7 +56,8 @@ public class TeamController {
     public ResponseDto updateTeamDetails(Authentication authentication,
                                          TeamUpdateDto teamUpdateDto,
                                          @PathVariable("teamId") Long teamId) {
-        teamService.updateTeamDetails(authentication, teamUpdateDto, teamId);
+        Long userId = Long.parseLong(authentication.getName());
+        teamService.updateTeamDetails(userId, teamUpdateDto, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀 정보 수정이 완료되었습니다.");
@@ -66,7 +68,8 @@ public class TeamController {
     @DeleteMapping("/{teamId}")
     public ResponseDto deleteTeam(Authentication authentication,
                                   @PathVariable("teamId") Long teamId) {
-        teamService.deleteTeam(authentication, teamId);
+        Long userId = Long.parseLong(authentication.getName());
+        teamService.deleteTeam(userId, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀 삭제가 완료되었습니다.");
@@ -77,7 +80,8 @@ public class TeamController {
     @DeleteMapping("/{teamId}/member")
     public ResponseDto leaveTeam(Authentication authentication,
                                  @PathVariable("teamId") Long teamId) {
-        teamService.leaveTeam(authentication, teamId);
+        Long userId = Long.parseLong(authentication.getName());
+        teamService.leaveTeam(userId, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀을 탈퇴하였습니다.");
