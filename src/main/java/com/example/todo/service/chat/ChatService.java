@@ -13,6 +13,7 @@ import com.example.todo.domain.repository.chat.ChatRepository;
 import com.example.todo.domain.repository.chat.ChatRoomRepository;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.ChatMessageDto;
+import com.example.todo.dto.ChatRoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,7 @@ public class ChatService {
         return "chat-room";
     }
 
+
     public List<ChatMessageDto> getLastMessages(Long roomId) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(roomId);
         if (optionalChatRoom.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 채팅방이 존재하지 않습니다!");
@@ -96,7 +98,15 @@ public class ChatService {
         for (Chat messageEntity: chatMessageEntities) {
             chatMessages.add(ChatMessageDto.fromEntity(messageEntity));
         }
-
         return chatMessages;
+    }
+
+    // teamId로 채팅방 조회하기
+    public List<ChatRoomDto> getChatRooms(Long teamId) {
+        List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
+        for (ChatRoom chatRoomEntity: chatRoomRepository.findAll()) {
+            chatRoomDtoList.add(ChatRoomDto.fromEntity(chatRoomEntity));
+        }
+        return chatRoomDtoList;
     }
 }
