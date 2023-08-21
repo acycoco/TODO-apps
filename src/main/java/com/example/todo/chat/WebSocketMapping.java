@@ -13,10 +13,13 @@ import com.example.todo.domain.repository.chat.ChatRepository;
 import com.example.todo.domain.repository.chat.ChatRoomRepository;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.ChatMessageDto;
+import com.example.todo.service.chat.ChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -36,8 +40,9 @@ public class WebSocketMapping {
     private final ChatRoomRepository chatRoomRepository;
     private final TeamReposiotry teamReposiotry;
     private final TaskApiRepository taskApiRepository;
+    private final ChatService chatService;
 
-    public WebSocketMapping(UserRepository userRepository, MemberRepository memberRepository, SimpMessagingTemplate simpMessagingTemplate, ChatRepository chatRepository, ChatRoomRepository chatRoomRepository, TeamReposiotry teamReposiotry, TaskApiRepository taskApiRepository) {
+    public WebSocketMapping(UserRepository userRepository, MemberRepository memberRepository, SimpMessagingTemplate simpMessagingTemplate, ChatRepository chatRepository, ChatRoomRepository chatRoomRepository, TeamReposiotry teamReposiotry, TaskApiRepository taskApiRepository, ChatService chatService) {
         this.userRepository = userRepository;
         this.memberRepository = memberRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -45,6 +50,7 @@ public class WebSocketMapping {
         this.chatRoomRepository = chatRoomRepository;
         this.teamReposiotry = teamReposiotry;
         this.taskApiRepository = taskApiRepository;
+        this.chatService = chatService;
     }
 
     @MessageMapping("/chat")
@@ -88,5 +94,29 @@ public class WebSocketMapping {
                 String.format("/%d/task/%d", teamId, taskId),
                 chatMessage
         );
+    }
+    // 누군가가 구독할때 실행하는 메소드
+    @SubscribeMapping("/{roomId}")
+    public List<ChatMessageDto> sendGreet(Authentication authentication,
+                                          @DestinationVariable("roomId") Long roomId
+    ) {
+        log.info("new subscription to {}", roomId);
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(roomId);
+        if (optionalChatRoom.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 채팅방은 존재하지 않습니다!");
+        ChatRoom chatRoom = optionalChatRoom.get();
+
+        Optional<User> optionalUser = userRepository.findById(Long.parseLong(authentication.getName()));
+        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저는 존재하지 않습니다!");
+        User user = optionalUser.get();
+        String username = user.getUsername();
+        List<ChatMessageDto> lastMessages
+                = chatService.getLastMessages(roomId);
+        ChatMessageDto chatMessage = new ChatMessageDto();
+        chatMessage.setRoom(chatRoom);
+        chatMessage.setSender("admin");
+        chatMessage.setMessage(String.format("%s님이 입장하셨습니다.", username));
+        lastMessages.add(chatMessage);
+
+        return lastMessages;
     }
 }
