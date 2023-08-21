@@ -1,7 +1,9 @@
 package com.example.todo.service.task;
 
+import com.example.todo.domain.entity.chat.ChatRoom;
 import com.example.todo.domain.entity.task.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
+import com.example.todo.domain.repository.chat.ChatRoomRepository;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TaskApiDto;
 import com.example.todo.exception.ErrorCode;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class TaskApiService {
     private final TaskApiRepository taskApiRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     //조직이 존재하는지 확인하는 메소드
     public TaskApiEntity getTeamById(Long id) {
@@ -54,6 +57,10 @@ public class TaskApiService {
             taskApiEntity.setStatus("완료");
         }
         taskApiRepository.save(taskApiEntity);
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setTaskApiEntity(taskApiEntity);
+        chatRoomRepository.save(chatRoom);
         return new ResponseDto("업무가 등록되었습니다.");
     }
 

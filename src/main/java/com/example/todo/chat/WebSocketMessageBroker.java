@@ -15,9 +15,9 @@ public class WebSocketMessageBroker implements WebSocketMessageBrokerConfigurer 
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic"); // 명세서에 추가 및 수정필요
-        registry.setApplicationDestinationPrefixes("/app"); // 명세서에 추가 및 수정필요
+    public void configureMessageBroker(MessageBrokerRegistry registry) { // 목적지와 상세 엔드포인트를 설정
+        registry.enableSimpleBroker("/{teamId}/task/{taskId}"); // 명세서에 추가 및 수정필요
+        registry.setApplicationDestinationPrefixes("/chat"); // 명세서에 추가 및 수정필요
     }
 
 }
