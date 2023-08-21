@@ -57,10 +57,7 @@ public class TaskApiService {
             taskApiEntity.setStatus("완료");
         }
         taskApiRepository.save(taskApiEntity);
-
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setTaskApiEntity(taskApiEntity);
-        chatRoomRepository.save(chatRoom);
+        //chatService.createRoom();
         return new ResponseDto("업무가 등록되었습니다.");
     }
 

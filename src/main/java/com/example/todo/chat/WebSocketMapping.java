@@ -88,6 +88,5 @@ public class WebSocketMapping {
                 String.format("/%d/task/%d", teamId, taskId),
                 chatMessage
         );
-
     }
 }

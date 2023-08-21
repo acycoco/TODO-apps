@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;
-    @GetMapping("/{teamId}/tasks/{taskId}")
+    @GetMapping("/team/{teamId}/tasks/{taskId}")
     public String enterRoom(Authentication authentication,
                             @PathVariable("teamId") Long teamId,
                             @PathVariable("taskId") Long taskId) {
