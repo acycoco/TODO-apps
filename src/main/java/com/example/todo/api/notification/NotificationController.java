@@ -1,6 +1,6 @@
 package com.example.todo.api.notification;
 
-import com.example.todo.domain.entity.NotificationEntity;
+import com.example.todo.dto.NotificationDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -32,10 +32,10 @@ public class NotificationController {
     }
     //아래는 Service에서 호출한다.
     @PostMapping(value = "/updateNews", produces = MediaType.APPLICATION_JSON_VALUE+";charset=UTF-8")
-    public void updateNews(@RequestBody NotificationEntity notificationEntity) {
+    public void updateNews(@RequestBody NotificationDto notificationDto) {
         for (SseEmitter emitter : emitters) {
             try {
-                SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event().data(notificationEntity);
+                SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event().data(notificationDto);
                 emitter.send(eventBuilder);
             } catch (IOException e) {
                 e.printStackTrace();
