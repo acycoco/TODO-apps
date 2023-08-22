@@ -7,9 +7,11 @@ import com.example.todo.dto.TeamUpdateDto;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/team")
 @RequiredArgsConstructor
@@ -28,8 +30,11 @@ public class TeamController {
 
     @PostMapping
     public ResponseDto createTeam(Authentication authentication,
-                                  @Valid TeamCreateDto teamCreateDto) {
+                                  @RequestBody TeamCreateDto teamCreateDto) {
         Long userId = Long.parseLong(authentication.getName());
+        log.info(teamCreateDto.getName());
+        log.info(teamCreateDto.getJoinCode());
+        log.info(teamCreateDto.getDescription());
         teamService.createTeam(userId, teamCreateDto);
 
         ResponseDto responseDto = new ResponseDto();
@@ -41,7 +46,7 @@ public class TeamController {
 
     @PostMapping("/{teamId}/member")
     public ResponseDto joinTeam(Authentication authentication,
-                                @Valid TeamJoinDto teamJoinDto,
+                                @RequestBody @Valid TeamJoinDto teamJoinDto,
                                 @PathVariable("teamId") Long teamId) {
         Long userId = Long.parseLong(authentication.getName());
         teamService.joinTeam(userId, teamJoinDto, teamId);
@@ -54,7 +59,7 @@ public class TeamController {
 
     @PutMapping("/{teamId}")
     public ResponseDto updateTeamDetails(Authentication authentication,
-                                         TeamUpdateDto teamUpdateDto,
+                                         @RequestBody TeamUpdateDto teamUpdateDto,
                                          @PathVariable("teamId") Long teamId) {
         Long userId = Long.parseLong(authentication.getName());
         teamService.updateTeamDetails(userId, teamUpdateDto, teamId);

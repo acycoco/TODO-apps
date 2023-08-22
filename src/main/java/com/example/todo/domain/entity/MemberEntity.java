@@ -13,8 +13,8 @@ public class MemberEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private TeamEntity team;
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private User user;
 }
