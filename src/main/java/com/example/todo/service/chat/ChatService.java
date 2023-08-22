@@ -47,7 +47,7 @@ public class ChatService {
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findByTeamAndUser(teamEntity, user);
         if (optionalMemberEntity.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저는 해당 팀에 속한 멤버가 아닙니다!");
-        MemberEntity memberEntity = optionalMemberEntity.get();
+//        MemberEntity memberEntity = optionalMemberEntity.get();
 
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setTaskApiEntity(taskApiEntity);
