@@ -1,5 +1,6 @@
 package com.example.todo.domain.entity;
 
+import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,4 +27,7 @@ public class TodoApiEntity {
             this.likes--;
         }
     }
+    @ManyToOne
+    private User user;
+
 }
