@@ -1,19 +1,26 @@
 package com.example.todo.service.task;
 
+import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.chat.ChatRoom;
 import com.example.todo.domain.entity.task.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
+import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.chat.ChatRoomRepository;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TaskApiDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
+import com.example.todo.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -22,15 +29,16 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class TaskApiService {
     private final TaskApiRepository taskApiRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final TeamReposiotry teamReposiotry;
+    private final ChatService chatService;
 
     //조직이 존재하는지 확인하는 메소드
-    public TaskApiEntity getTeamById(Long id) {
+    public TeamEntity getTeamById(Long teamId) {
         //해당 Id를 가진 Entity가 존재하는지?
-        Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(id);
-        if (optionalTaskApiEntity.isEmpty())
+        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
+        if (optionalTeamEntity.isEmpty())
             throw new TodoAppException(ErrorCode.NOT_FOUND_TEAM);
-        return optionalTaskApiEntity.get();
+        return optionalTeamEntity.get();
     }
 
     //업무 등록
@@ -56,8 +64,8 @@ public class TaskApiService {
         else if (taskApiDto.getDueDate().isBefore(currentDate)) {
             taskApiEntity.setStatus("완료");
         }
-        taskApiRepository.save(taskApiEntity);
-        //chatService.createRoom();
+        taskApiEntity = taskApiRepository.save(taskApiEntity);
+        chatService.createRoom(taskApiEntity);
         return new ResponseDto("업무가 등록되었습니다.");
     }
 
@@ -84,7 +92,10 @@ public class TaskApiService {
 
     //업무 수정
     public ResponseDto updateTask(Long teamId, Long taskId, TaskApiDto taskApiDto) {
-        TaskApiEntity taskApiEntity = getTeamById(taskId);
+        Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(taskId);
+        if (optionalTaskApiEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        TaskApiEntity taskApiEntity = optionalTaskApiEntity.get();
+
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeamId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
@@ -110,7 +121,10 @@ public class TaskApiService {
 
     //업무 삭제
     public ResponseDto deleteTask(Long teamId, Long taskId, TaskApiDto taskApiDto) {
-        TaskApiEntity taskApiEntity = getTeamById(taskId);
+        Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(taskId);
+        if (optionalTaskApiEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        TaskApiEntity taskApiEntity = optionalTaskApiEntity.get();
+
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeamId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);

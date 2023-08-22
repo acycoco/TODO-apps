@@ -34,12 +34,12 @@ public class ChatService {
     private final TeamReposiotry teamReposiotry;
     private final MemberRepository memberRepository;
     private final TaskApiRepository taskApiRepository;
-    public void createRoom(Long userId, Long teamId, Long taskId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+    public void createRoom(TaskApiEntity taskApiEntity) {
+        Optional<User> optionalUser = userRepository.findById(taskApiEntity.getUserId());
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         User user = optionalUser.get();
 
-        Optional<TeamEntity> teamEntityOptional = teamReposiotry.findById(teamId);
+        Optional<TeamEntity> teamEntityOptional = teamReposiotry.findById(taskApiEntity.getTeamId());
         if (teamEntityOptional.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀은 존재하지 않습니다!");
         TeamEntity teamEntity = teamEntityOptional.get();
@@ -48,11 +48,6 @@ public class ChatService {
         if (optionalMemberEntity.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저는 해당 팀에 속한 멤버가 아닙니다!");
         MemberEntity memberEntity = optionalMemberEntity.get();
-
-        Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(taskId);
-        if (optionalTaskApiEntity.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 task는 존재하지 않습니다!");
-        TaskApiEntity taskApiEntity = optionalTaskApiEntity.get();
 
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setTaskApiEntity(taskApiEntity);
