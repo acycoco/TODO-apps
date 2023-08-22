@@ -1,6 +1,6 @@
 package com.example.todo.dto;
 
-import com.example.todo.domain.entity.task.TaskApiEntity;
+import com.example.todo.domain.entity.TaskApiEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

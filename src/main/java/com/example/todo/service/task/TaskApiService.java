@@ -1,7 +1,7 @@
 package com.example.todo.service.task;
 
 import com.example.todo.domain.entity.TeamEntity;
-import com.example.todo.domain.entity.task.TaskApiEntity;
+import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.dto.ResponseDto;

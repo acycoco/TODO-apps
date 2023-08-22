@@ -45,11 +45,11 @@ public class TodoApiController {
     }
     //Todo 삭제
     @DeleteMapping("/{todoId}")
-    public ResponseDto delete(@PathVariable("todoId") Long todoId, @RequestBody TodoApiDto todoApiDto) {
-        return service.deleteTodo(todoId, todoApiDto);
+    public ResponseDto delete(@PathVariable("todoId") Long todoId) {
+        return service.deleteTodo(todoId);
     }
     //Todo 좋아요 추가, 취소 기능
-    @PostMapping("/{todoId}/toggleLike")
+    @PostMapping("/{todoId}/like")
     public ResponseEntity<ResponseDto> toggleLikeTodo(@PathVariable Long todoId) {
         try {
             ResponseDto responseDto = service.toggleLikeTodoById(todoId);

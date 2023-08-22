@@ -1,7 +1,7 @@
 package com.example.todo.domain.entity.chat;
 
 import com.example.todo.domain.entity.BaseTimeEntity;
-import com.example.todo.domain.entity.task.TaskApiEntity;
+import com.example.todo.domain.entity.TaskApiEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
