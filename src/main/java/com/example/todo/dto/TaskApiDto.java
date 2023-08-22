@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Data
 public class TaskApiDto {
     private Long id;
-    private Long teamId;
     private Long userId;
     @NotNull(message = "제목을 작성해주세요.")
     private String taskName;
@@ -24,7 +23,6 @@ public class TaskApiDto {
     public static TaskApiDto fromEntity(TaskApiEntity entity) {
         TaskApiDto taskApiDto = new TaskApiDto();
         taskApiDto.setId(entity.getId());
-        taskApiDto.setTeamId(entity.getTeamId());
         taskApiDto.setTaskName(entity.getTaskName());
         taskApiDto.setTaskDesc(entity.getTaskDesc());
         taskApiDto.setStartDate(entity.getStartDate());
