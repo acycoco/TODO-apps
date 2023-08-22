@@ -86,7 +86,7 @@ public class ChatService {
         return "chat-room";
     }
 
-
+    // 채팅 기록 불러오기
     public List<ChatMessageDto> getLastMessages(Long roomId) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(roomId);
         if (optionalChatRoom.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 채팅방이 존재하지 않습니다!");
