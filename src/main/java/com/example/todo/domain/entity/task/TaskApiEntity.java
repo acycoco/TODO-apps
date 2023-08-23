@@ -14,7 +14,6 @@ public class TaskApiEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long teamId;
     private Long userId;
     private String taskName;
     private String taskDesc;
