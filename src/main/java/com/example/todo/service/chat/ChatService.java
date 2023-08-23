@@ -1,10 +1,10 @@
 package com.example.todo.service.chat;
 
 import com.example.todo.domain.entity.MemberEntity;
+import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.chat.Chat;
 import com.example.todo.domain.entity.chat.ChatRoom;
-import com.example.todo.domain.entity.task.TaskApiEntity;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TaskApiRepository;

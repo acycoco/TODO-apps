@@ -54,7 +54,6 @@ public class TaskApiService {
         //조직이 존재하는지 확인
         getTeamById(teamId);
         taskApiEntity.setUserId(userId);
-        taskApiEntity.setTeamId(teamId);
         taskApiEntity.setTaskName(taskApiDto.getTaskName());
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
         taskApiEntity.setStartDate(taskApiDto.getStartDate());
@@ -103,7 +102,7 @@ public class TaskApiService {
         TaskApiEntity taskApiEntity = optionalTaskApiEntity.get();
 
         //대상 업무가 대상 팀의 업무가 맞는지
-        if (!teamId.equals(taskApiEntity.getTeamId()))
+        if (!teamId.equals(taskApiEntity.getTeam().getId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
         //맞다면 진행
         taskApiEntity.setTaskName(taskApiDto.getTaskName());

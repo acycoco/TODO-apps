@@ -3,7 +3,6 @@ package com.example.todo.dto;
 import com.example.todo.domain.entity.TaskApiEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
 import java.time.LocalDate;
 
 @Data
@@ -24,7 +23,6 @@ public class TaskApiDto {
     public static TaskApiDto fromEntity(TaskApiEntity entity) {
         TaskApiDto taskApiDto = new TaskApiDto();
         taskApiDto.setId(entity.getId());
-        taskApiDto.setTeamId(entity.getTeamId());
         taskApiDto.setTaskName(entity.getTaskName());
         taskApiDto.setTaskDesc(entity.getTaskDesc());
         taskApiDto.setStartDate(entity.getStartDate());
