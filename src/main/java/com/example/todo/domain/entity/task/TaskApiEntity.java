@@ -1,5 +1,7 @@
 package com.example.todo.domain.entity.task;
 
+import com.example.todo.domain.entity.MemberEntity;
+import com.example.todo.domain.entity.TeamEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +21,9 @@ public class TaskApiEntity {
     private LocalDate startDate;
     private LocalDate dueDate;
     private String status;
+    @ManyToOne
+    private MemberEntity member;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private TeamEntity team;
 }
