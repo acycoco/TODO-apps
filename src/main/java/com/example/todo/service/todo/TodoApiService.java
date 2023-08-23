@@ -1,6 +1,8 @@
 package com.example.todo.service.todo;
 
+import com.example.todo.api.notification.NotificationController;
 import com.example.todo.domain.repository.TodoApiRepository;
+import com.example.todo.dto.NotificationDto;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TodoApiDto;
 import com.example.todo.domain.entity.TodoApiEntity;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -21,6 +24,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TodoApiService {
     private final TodoApiRepository todoApiRepository;
+    private final NotificationController notificationController;
+
 
     //해당 to do가  존재하는지 확인하는 메소드
     public TodoApiEntity getTodoById(Long id) {
@@ -114,11 +119,21 @@ public class TodoApiService {
 
         if (optionalTodoApiEntity.isPresent()) {
             TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
+
+            LocalDateTime currentTime = LocalDateTime.now(); // 현재 시간
+
             // 좋아요를 한 번도 누르지 않은 경우
             if (todoApiEntity.getLikes() == 0) {
                 //좋아요 추가
                 todoApiEntity.addLike();
                 todoApiRepository.save(todoApiEntity);
+
+                NotificationDto notificationDto = new NotificationDto();
+                notificationDto.setTitle("Todo 좋아요 알림");
+                notificationDto.setContent("회원님의 Todo '" + todoApiEntity.getTitle() + "' 게시물에 좋아요가 눌렸습니다.");
+                notificationDto.setCreatedTime(currentTime);
+
+                notificationController.updateNews(notificationDto);
                 return new ResponseDto("좋아요를 눌렀습니다.");
             } else {
                 // 이미 좋아요를 누른 경우, 좋아요 취소
@@ -130,5 +145,4 @@ public class TodoApiService {
         throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
     }
 }
-
 

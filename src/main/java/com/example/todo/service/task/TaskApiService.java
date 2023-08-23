@@ -1,9 +1,11 @@
 package com.example.todo.service.task;
 
+import com.example.todo.api.notification.NotificationController;
 import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
+import com.example.todo.dto.NotificationDto;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.TaskApiDto;
 import com.example.todo.exception.ErrorCode;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -23,6 +27,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class TaskApiService {
     private final TaskApiRepository taskApiRepository;
+    private final NotificationController notificationController;
     private final TeamReposiotry teamReposiotry;
 
     //조직이 존재하는지 확인하는 메소드
@@ -122,6 +127,15 @@ public class TaskApiService {
             taskApiEntity.setStatus("완료");
         }
         taskApiRepository.save(taskApiEntity);
+        //업무 수정후 알림 보내기
+        LocalDateTime currentTime = LocalDateTime.now(); // 현재 시간
+
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setTitle("업무 수정 알림");
+        notificationDto.setContent("Team: " + teamEntity.getId() + ", Task: '" + taskApiEntity.getTaskName() + "' 업무가 수정되었습니다.");
+        notificationDto.setCreatedTime(currentTime);
+
+        notificationController.updateNews(notificationDto);
 
         return new ResponseDto("업무가 수정되었습니다.");
     }
