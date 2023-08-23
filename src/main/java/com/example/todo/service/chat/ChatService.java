@@ -38,8 +38,7 @@ public class ChatService {
         Optional<User> optionalUser = userRepository.findById(taskApiEntity.getUserId());
         if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         User user = optionalUser.get();
-
-        Optional<TeamEntity> teamEntityOptional = teamReposiotry.findById(taskApiEntity.getTeamId());
+        Optional<TeamEntity> teamEntityOptional = teamReposiotry.findById(taskApiEntity.getTeam().getId());
         if (teamEntityOptional.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀은 존재하지 않습니다!");
         TeamEntity teamEntity = teamEntityOptional.get();
