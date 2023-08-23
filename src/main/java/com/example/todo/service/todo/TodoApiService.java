@@ -101,7 +101,7 @@ public class TodoApiService {
     }
 
     //to do 삭제
-    public ResponseDto deleteTodo(Long todoId, TodoApiDto todoApiDto) {
+    public ResponseDto deleteTodo(Long todoId) {
         TodoApiEntity todoApiEntity = getTodoById(todoId);
         todoApiRepository.deleteById(todoApiEntity.getId());
         return new ResponseDto("Todo가 삭제되었습니다.");

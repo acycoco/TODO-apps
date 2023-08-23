@@ -1,4 +1,4 @@
-package com.example.todo.domain.entity.task;
+package com.example.todo.domain.entity;
 
 import com.example.todo.domain.entity.MemberEntity;
 import com.example.todo.domain.entity.TeamEntity;
