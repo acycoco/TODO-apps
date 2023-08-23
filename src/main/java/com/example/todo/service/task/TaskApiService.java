@@ -54,6 +54,7 @@ public class TaskApiService {
         //조직이 존재하는지 확인
         getTeamById(teamId);
         taskApiEntity.setUserId(userId);
+        taskApiEntity.getTeam().setId(teamId);
         taskApiEntity.setTaskName(taskApiDto.getTaskName());
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
         taskApiEntity.setStartDate(taskApiDto.getStartDate());
