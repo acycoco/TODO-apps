@@ -49,12 +49,17 @@ public class TaskApiService {
 
     //업무 등록
     public ResponseDto createTask(Long userId, Long teamId, TaskApiDto taskApiDto) {
+        log.info("TaskApiService createTask1");
+        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
+        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        TeamEntity teamEntity = optionalTeamEntity.get();
         TaskApiEntity taskApiEntity = new TaskApiEntity();
+
         //조직이 존재하는지 확인
         getTeamById(teamId);
         taskApiEntity.setUserId(userId);
-        taskApiEntity.getTeam().setId(teamId);
+        taskApiEntity.setTeam(teamEntity);
         taskApiEntity.setTaskName(taskApiDto.getTaskName());
         taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
         taskApiEntity.setStartDate(taskApiDto.getStartDate());
