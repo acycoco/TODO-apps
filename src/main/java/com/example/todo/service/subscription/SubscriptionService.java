@@ -4,6 +4,7 @@ import com.example.todo.domain.entity.SubscriptionEntity;
 import com.example.todo.domain.repository.SubscriptionRepository;
 import com.example.todo.dto.SubscriptionCreateRequestDto;
 import com.example.todo.dto.SubscriptionResponseDto;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
 
+    @Transactional
     public SubscriptionResponseDto createSubscription(SubscriptionCreateRequestDto dto){
         SubscriptionEntity subscription = SubscriptionEntity.builder()
                 .name(dto.getName())
@@ -29,12 +31,12 @@ public class SubscriptionService {
 
         return SubscriptionResponseDto.fromEntity(subscriptionRepository.save(subscription));
     }
-
+    @Transactional
     public Page<SubscriptionResponseDto> readAllSubscription(Integer page, Integer limit){
         Page<SubscriptionEntity> subscriptionEntities = subscriptionRepository.findAll(PageRequest.of(page, limit));
         return subscriptionEntities.map(SubscriptionResponseDto::fromEntity);
     }
-
+    @Transactional
     public SubscriptionResponseDto readSubscription(Long subscriptionId){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
@@ -42,12 +44,12 @@ public class SubscriptionService {
         return SubscriptionResponseDto.fromEntity(subscription);
     }
 
-
+    @Transactional
     public Page<SubscriptionResponseDto> readAllActiveSubscription(Integer page, Integer limit){
         Page<SubscriptionEntity> subscriptionEntities = subscriptionRepository.findAllByStatusIsTrue(PageRequest.of(page, limit));
         return subscriptionEntities.map(SubscriptionResponseDto::fromEntity);
     }
-
+    @Transactional
     public SubscriptionResponseDto readActiveSubscription(Long subscriptionId){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
@@ -57,7 +59,7 @@ public class SubscriptionService {
 
         return SubscriptionResponseDto.fromEntity(subscription);
     }
-
+    @Transactional
     public SubscriptionResponseDto updateSubscription(Long subscriptionId, SubscriptionCreateRequestDto dto){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
@@ -69,7 +71,7 @@ public class SubscriptionService {
 
         return SubscriptionResponseDto.fromEntity(subscriptionRepository.save(subscription));
     }
-
+    @Transactional
     public SubscriptionResponseDto updateSubscriptionStatus(Long subscriptionId){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
@@ -82,7 +84,7 @@ public class SubscriptionService {
 
         return SubscriptionResponseDto.fromEntity(subscriptionRepository.save(subscription));
     }
-
+    @Transactional
     public void deleteSubscription(Long subscriptionId){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
