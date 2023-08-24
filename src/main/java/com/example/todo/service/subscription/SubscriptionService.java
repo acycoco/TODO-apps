@@ -70,7 +70,7 @@ public class SubscriptionService {
         return SubscriptionResponseDto.fromEntity(subscriptionRepository.save(subscription));
     }
 
-    public SubscriptionResponseDto updateSubscriptionStatus(Long subscriptionId, SubscriptionCreateRequestDto dto){
+    public SubscriptionResponseDto updateSubscriptionStatus(Long subscriptionId){
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 구독권이 존재하지 않습니다. "));
 
