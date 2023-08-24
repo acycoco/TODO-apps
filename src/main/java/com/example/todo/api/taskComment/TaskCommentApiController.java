@@ -12,17 +12,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/task/{taskId}/comments")
+@RequestMapping("/team/{teamId}/task/{taskId}/comments")
 @RequiredArgsConstructor
 public class TaskCommentApiController {
     private final TaskCommentService taskCommentService;
     @PostMapping
     public ResponseDto createTaskComment(Authentication authentication,
+                                         @PathVariable("teamId") Long teamId,
                                          @PathVariable("taskId") Long taskId,
                                          @RequestBody TaskCommentCreateDto taskCommentCreateDto) {
         Long userId = Long.parseLong(authentication.getName());
 
-        taskCommentService.createTaskComment(userId, taskId, taskCommentService);
+        taskCommentService.createTaskComment(userId, teamId, taskId, taskCommentCreateDto);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("Task에 댓글이 등록되었습니다.");
@@ -31,19 +32,23 @@ public class TaskCommentApiController {
 
     @GetMapping
     public Page<TaskCommentReadDto> readTaskCommentReadDtoPage(Authentication authentication,
-                                                               @PathVariable("taskId") Long taskId) {
+                                                               @PathVariable("teamId") Long teamId,
+                                                               @PathVariable("taskId") Long taskId,
+                                                               @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                               @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         Long userId = Long.parseLong(authentication.getName());
-        Page<TaskCommentReadDto> page = taskCommentService.readTaskCommentsPage(userId, taskId);
-        return page;
+        Page<TaskCommentReadDto> taskCommentReadDtoPage = taskCommentService.readTaskCommentsPage(userId, teamId, taskId, page, limit);
+        return taskCommentReadDtoPage;
     }
 
     @PutMapping("/{commentId}")
     public ResponseDto updateTaskComment(Authentication authentication,
+                                         @PathVariable("teamId") Long teamId,
                                          @PathVariable("taskId") Long taskId,
                                          @PathVariable("commentId") Long commentId,
                                          TaskCommentUpdateDto taskCommentUpdateDto) {
         Long userId = Long.parseLong(authentication.getName());
-        taskCommentService.updateTaskComment(userId, taskId, commentId, taskCommentUpdateDto);
+        taskCommentService.updateTaskComment(userId, teamId, taskId, commentId, taskCommentUpdateDto);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("Task에 댓글이 수정되었습니다.");

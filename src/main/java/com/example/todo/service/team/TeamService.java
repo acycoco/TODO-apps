@@ -25,7 +25,6 @@ public class TeamService {
     private final TeamReposiotry teamReposiotry;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
-
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
