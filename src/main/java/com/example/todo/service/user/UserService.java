@@ -1,5 +1,6 @@
 package com.example.todo.service.user;
 
+import com.example.todo.domain.entity.enums.Role;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.user.request.UserJoinRequestDto;
@@ -34,5 +35,17 @@ public class UserService {
 
         user.updateProfile(updateDto, passwordEncoder.encode(updateDto.getPassword()), "image");
         return new UserUpdateResponseDto(user);
+    }
+
+    @Transactional
+    public void createAdminUser(){
+        if (!userRepository.existsByUsername("admin")){
+            User user = User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("password"))
+                    .role(Role.ADMIN)
+                    .build();
+            userRepository.save(user);
+        }
     }
 }
