@@ -3,12 +3,12 @@ package com.example.todo.dto;
 import com.example.todo.domain.entity.TaskApiEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
 import java.time.LocalDate;
 
 @Data
 public class TaskApiDto {
     private Long id;
+    private Long teamId;
     private Long userId;
     @NotNull(message = "제목을 작성해주세요.")
     private String taskName;

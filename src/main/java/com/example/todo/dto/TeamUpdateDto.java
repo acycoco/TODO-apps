@@ -10,6 +10,4 @@ public class TeamUpdateDto {
     private String description;
     private String joinCode;
     private User manager;
-
-
 }
