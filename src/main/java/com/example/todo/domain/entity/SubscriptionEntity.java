@@ -18,13 +18,35 @@ public class SubscriptionEntity {
     private Integer maxMember;
     private Integer price;
     private String description;
+    private Boolean status;
+
+    public void changeName(String name){
+        this.name = name;
+    }
+
+    public void changeMaxMember(Integer maxMember){
+        this.maxMember = maxMember;
+    }
+
+    public void changePrice(Integer price){
+        this.price = price;
+    }
+
+    public void changeDescription(String description){
+        this.description = description;
+    }
+
+    public void changeStatus(Boolean status){
+        this.status = status;
+    }
 
     @Builder
-    public SubscriptionEntity(Long id, String name, Integer maxMember, Integer price, String description) {
+    public SubscriptionEntity(Long id, String name, Integer maxMember, Integer price, String description, Boolean status) {
         this.id = id;
         this.name = name;
         this.maxMember = maxMember;
         this.price = price;
         this.description = description;
+        this.status = status;
     }
 }
