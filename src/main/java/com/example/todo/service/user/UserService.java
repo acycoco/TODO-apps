@@ -39,11 +39,13 @@ public class UserService {
 
     @Transactional
     public void createAdminUser(){
-        User user = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("password"))
-                .role(Role.ADMIN)
-                .build();
-        userRepository.save(user);
+        if (!userRepository.existsByUsername("admin")){
+            User user = User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("password"))
+                    .role(Role.ADMIN)
+                    .build();
+            userRepository.save(user);
+        }
     }
 }
