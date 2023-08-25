@@ -1,4 +1,4 @@
-package com.example.todo.dto.taskComment;
+package com.example.todo.dto.task;
 
 import lombok.Getter;
 import lombok.Setter;

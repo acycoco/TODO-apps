@@ -5,7 +5,7 @@ import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.TaskApiDto;
+import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import com.example.todo.service.chat.ChatService;

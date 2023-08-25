@@ -1,4 +1,4 @@
-package com.example.todo.service.taskComment;
+package com.example.todo.service.task;
 
 import com.example.todo.domain.entity.MemberEntity;
 import com.example.todo.domain.entity.TaskApiEntity;
@@ -10,9 +10,9 @@ import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TaskCommentRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.user.UserRepository;
-import com.example.todo.dto.taskComment.TaskCommentCreateDto;
-import com.example.todo.dto.taskComment.TaskCommentReadDto;
-import com.example.todo.dto.taskComment.TaskCommentUpdateDto;
+import com.example.todo.dto.task.TaskCommentCreateDto;
+import com.example.todo.dto.task.TaskCommentReadDto;
+import com.example.todo.dto.task.TaskCommentUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
