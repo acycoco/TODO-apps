@@ -15,7 +15,10 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다."),
 
     NOT_MATCH_USERID(NOT_FOUND, "담당자가 아닙니다."),
+    NOT_MATCH_MANAGERID(NOT_FOUND, "팀매니저가 아닙니다."),
+    NOT_MATCH_MEMBERID(NOT_FOUND, "팀원이 아닙니다."),
     NOT_MATCH_TEAM_AND_TASK(NOT_FOUND, "해당팀의 업무가 아닙니다."),
+    NOT_MATCH_TEAM_AND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당팀의 구독권이 아닙니다."),
 
     NOT_FOUND_ENTITY(NOT_FOUND, "데이터가 존재하지 않습니다."),
     NOT_FOUND_TEAM(NOT_FOUND, "해당팀이 존재하지 않습니다."),
@@ -23,7 +26,13 @@ public enum ErrorCode {
     NOT_FOUND_USER(NOT_FOUND, "해당USER가 존재하지 않습니다."),
     NOT_FOUND_TASK(NOT_FOUND, "해당업무가 존재하지 않습니다."),
 
+    NOT_FOUND_SUBSCRIPTION(NOT_FOUND, "해당구독권이 존재하지 않습니다."),
+    NOT_FOUND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당 팀_구독권이 존재하지 않습니다."),
+    NOT_FOUND_ACTIVE_SUBSCRIPTION(NOT_FOUND, "해당 활성화된 구독권이 존재하지 않습니다."),
+
+
     ALREADY_USER_USERNAME(CONFLICT, "이미 존재하는 사용자입니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;

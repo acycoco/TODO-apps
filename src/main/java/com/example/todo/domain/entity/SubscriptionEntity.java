@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "subscription")
 @Getter
@@ -20,6 +22,9 @@ public class SubscriptionEntity {
     private String description;
     private Boolean status;
 
+    @OneToMany(mappedBy = "subscription")
+    private List<TeamSubscriptionEntity> teamSubscriptions;
+
     public void changeName(String name){
         this.name = name;
     }
@@ -27,6 +32,7 @@ public class SubscriptionEntity {
     public void changeMaxMember(Integer maxMember){
         this.maxMember = maxMember;
     }
+
 
     public void changePrice(Integer price){
         this.price = price;
