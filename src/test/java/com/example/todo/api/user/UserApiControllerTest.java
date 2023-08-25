@@ -3,49 +3,49 @@ package com.example.todo.api.user;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.user.request.UserJoinRequestDto;
+import com.example.todo.dto.user.request.UserLoginRequestDto;
 import com.example.todo.dto.user.request.UserUpdateRequestDto;
 import com.example.todo.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class})
+//@ExtendWith({RestDocumentationExtension.class})
+@AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @Transactional
 @SpringBootTest
 class UserApiControllerTest {
 
     @Autowired
-    private WebApplicationContext context;
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     private MockMvc mvc;
 
     @Autowired
@@ -58,16 +58,16 @@ class UserApiControllerTest {
 
     private Authentication authentication;
 
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation)
-                        .operationPreprocessors()
-                        .withRequestDefaults(prettyPrint())
-                        .withResponseDefaults(prettyPrint()))
-                .build();
-    }
+//    @BeforeEach
+//    void setUp(RestDocumentationContextProvider restDocumentation) {
+//        mvc = MockMvcBuilders
+//                .webAppContextSetup(context)
+//                .apply(documentationConfiguration(restDocumentation)
+//                        .operationPreprocessors()
+//                        .withRequestDefaults(prettyPrint())
+//                        .withResponseDefaults(prettyPrint()))
+//                .build();
+//    }
 
     @DisplayName("회원가입 API 테스트")
     @Test
@@ -89,11 +89,22 @@ class UserApiControllerTest {
         // then
         perform.andExpect(status().isOk())
                 .andDo(document("/api/join",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("username").description("아이디"),
                                 fieldWithPath("password").description("비밀번호"),
                                 fieldWithPath("phone").description("연락처")
                         )));
+//        perform.andExpect(status().isOk())
+//                .andDo(document("/api/join",
+//                        requestFields(
+//                                fieldWithPath("username").description("아이디"),
+//                                fieldWithPath("password").description("비밀번호"),
+//                                fieldWithPath("phone").description("연락처")
+//                        ),
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint())));
 
     }
 
@@ -125,6 +136,8 @@ class UserApiControllerTest {
         // then
         perform.andExpect(status().isOk())
                 .andDo(document("/api/users/update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("password").description("비밀번호"),
                                 fieldWithPath("phone").description("연락처"),
@@ -133,10 +146,43 @@ class UserApiControllerTest {
 
     }
 
+    @DisplayName("로그인 Api 테스트")
+    @Test
+    void login() throws Exception {
+        // given
+        createUser("아이디", "비밀번호");
+//        UserJoinRequestDto joinDto = UserJoinRequestDto.builder()
+//                .username("아이디")
+//                .password("비밀번호")
+//                .build();
+//        userService.createUser(joinDto); // 암호화 된 계정을 만들기 위함이다. 시큐리티 로그인이기 때문에 이렇게 해야 로그인 가능함
+        UserLoginRequestDto user = UserLoginRequestDto.builder()
+                .username("아이디")
+                .password("비밀번호")
+                .build();
+        String url = "http://localhost:8080/login";
+
+        // when
+        ResultActions perform = mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)));
+
+        // then
+        perform.andExpect(status().isOk())
+                .andDo(document("/login",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("username").description("아이디"),
+                                fieldWithPath("password").description("비밀번호")
+                        )));
+
+    }
+
     private User createUser(final String username, final String password) {
         User user = userRepository.save(User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .build());
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword(), new ArrayList<>()));
