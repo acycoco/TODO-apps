@@ -25,7 +25,6 @@ public class TeamService {
     private final TeamReposiotry teamReposiotry;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
-
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -34,13 +33,16 @@ public class TeamService {
         User manager = optionalUser.get();
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName(teamCreateDto.getName());
-        log.info(teamCreateDto.getName());
-        log.info(teamCreateDto.getJoinCode());
-        log.info(teamCreateDto.getDescription());
         teamEntity.setDescription(teamCreateDto.getDescription());
         teamEntity.setJoinCode(teamCreateDto.getJoinCode());
         teamEntity.setManager(manager);
-        teamReposiotry.save(teamEntity);
+        teamEntity = teamReposiotry.save(teamEntity);
+
+        // manager를 멤버로 추가
+        MemberEntity member = new MemberEntity();
+        member.setTeam(teamEntity);
+        member.setUser(manager);
+        memberRepository.save(member);
 
     }
 
