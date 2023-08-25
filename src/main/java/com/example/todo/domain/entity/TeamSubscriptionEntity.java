@@ -3,13 +3,14 @@ package com.example.todo.domain.entity;
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "subscription")
+@Table(name = "team_subscription")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamSubscriptionEntity {
@@ -20,9 +21,22 @@ public class TeamSubscriptionEntity {
     private LocalDate endDate;
     private SubscriptionStatus subscriptionStatus;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private TeamEntity team;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private SubscriptionEntity subscription;
+
+    public void changeSubscriptionStatus(SubscriptionStatus subscriptionStatus){
+        this.subscriptionStatus = subscriptionStatus;
+    }
+    @Builder
+    public TeamSubscriptionEntity(Long id, LocalDate startDate, LocalDate endDate, SubscriptionStatus subscriptionStatus, TeamEntity team, SubscriptionEntity subscription) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.subscriptionStatus = subscriptionStatus;
+        this.team = team;
+        this.subscription = subscription;
+    }
 }
