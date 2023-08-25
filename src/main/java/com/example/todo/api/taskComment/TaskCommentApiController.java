@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/team/{teamId}/task/{taskId}/comments")
+@RequestMapping("/api/team/{teamId}/task/{taskId}/comments")
 @RequiredArgsConstructor
 public class TaskCommentApiController {
     private final TaskCommentService taskCommentService;
