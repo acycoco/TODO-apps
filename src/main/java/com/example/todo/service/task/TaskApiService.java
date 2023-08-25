@@ -5,10 +5,9 @@ import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.TaskApiDto;
+import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
-import com.example.todo.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,6 @@ import java.time.LocalDate;
 public class TaskApiService {
     private final TaskApiRepository taskApiRepository;
     private final TeamReposiotry teamReposiotry;
-    private final ChatService chatService;
 
     //조직이 존재하는지 확인하는 메소드
     public TeamEntity getTeamById(Long teamId) {
@@ -76,7 +74,6 @@ public class TaskApiService {
             taskApiEntity.setStatus("완료");
         }
         taskApiEntity = taskApiRepository.save(taskApiEntity);
-        chatService.createRoom(taskApiEntity);
         return new ResponseDto("업무가 등록되었습니다.");
     }
 

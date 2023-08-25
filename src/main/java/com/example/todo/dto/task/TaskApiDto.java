@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.task;
 
 import com.example.todo.domain.entity.TaskApiEntity;
 import jakarta.validation.constraints.NotNull;

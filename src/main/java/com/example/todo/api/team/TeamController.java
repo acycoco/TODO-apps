@@ -1,9 +1,9 @@
 package com.example.todo.api.team;
 
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.TeamCreateDto;
-import com.example.todo.dto.TeamJoinDto;
-import com.example.todo.dto.TeamUpdateDto;
+import com.example.todo.dto.team.TeamCreateDto;
+import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.dto.team.TeamUpdateDto;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

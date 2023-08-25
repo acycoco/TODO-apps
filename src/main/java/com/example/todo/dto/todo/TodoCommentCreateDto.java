@@ -1,10 +1,10 @@
-package com.example.todo.dto.taskComment;
+package com.example.todo.dto.todo;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskCommentUpdateDto {
+public class TodoCommentCreateDto {
     private String content;
 }

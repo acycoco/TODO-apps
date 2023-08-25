@@ -1,11 +1,11 @@
 package com.example.todo.exception;
 
+import com.example.todo.domain.entity.enums.ResultCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @AllArgsConstructor
 @Getter
@@ -25,9 +25,14 @@ public enum ErrorCode {
     NOT_FOUND_TODO(NOT_FOUND, "해당TODO가 존재하지 않습니다."),
     NOT_FOUND_USER(NOT_FOUND, "해당USER가 존재하지 않습니다."),
     NOT_FOUND_TASK(NOT_FOUND, "해당업무가 존재하지 않습니다."),
+
     NOT_FOUND_SUBSCRIPTION(NOT_FOUND, "해당구독권이 존재하지 않습니다."),
     NOT_FOUND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당 팀_구독권이 존재하지 않습니다."),
-    NOT_FOUND_ACTIVE_SUBSCRIPTION(NOT_FOUND, "해당 활성화된 구독권이 존재하지 않습니다.");
+    NOT_FOUND_ACTIVE_SUBSCRIPTION(NOT_FOUND, "해당 활성화된 구독권이 존재하지 않습니다."),
+
+
+    ALREADY_USER_USERNAME(CONFLICT, "이미 존재하는 사용자입니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;

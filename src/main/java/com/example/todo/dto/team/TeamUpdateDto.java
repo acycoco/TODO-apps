@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.team;
 
 import com.example.todo.domain.entity.user.User;
 import lombok.Getter;

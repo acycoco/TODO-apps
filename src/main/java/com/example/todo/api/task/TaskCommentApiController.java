@@ -1,10 +1,10 @@
-package com.example.todo.api.taskComment;
+package com.example.todo.api.task;
 
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.taskComment.TaskCommentCreateDto;
-import com.example.todo.dto.taskComment.TaskCommentReadDto;
-import com.example.todo.dto.taskComment.TaskCommentUpdateDto;
-import com.example.todo.service.taskComment.TaskCommentService;
+import com.example.todo.dto.task.TaskCommentCreateDto;
+import com.example.todo.dto.task.TaskCommentReadDto;
+import com.example.todo.dto.task.TaskCommentUpdateDto;
+import com.example.todo.service.task.TaskCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -54,7 +54,4 @@ public class TaskCommentApiController {
         responseDto.setMessage("Task에 댓글이 수정되었습니다.");
         return responseDto;
     }
-
-
-
 }

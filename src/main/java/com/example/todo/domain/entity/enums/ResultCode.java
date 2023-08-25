@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ResultCode {
 
-    SUCCESS(HttpStatus.OK);
+    SUCCESS(HttpStatus.OK),
+    CONFLICT(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;
 }
