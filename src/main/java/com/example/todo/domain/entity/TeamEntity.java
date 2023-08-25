@@ -23,7 +23,7 @@ public class TeamEntity {
     @OneToMany
     private List<MemberEntity> member;
 
-    @OneToOne
+    @OneToOne(mappedBy = "team", cascade = CascadeType.REMOVE)
     private TeamActiveSubscriptionEntity activeSubscription;
 
     @OneToMany(mappedBy = "team")

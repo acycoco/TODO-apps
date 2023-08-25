@@ -27,8 +27,18 @@ public class TeamSubscriptionEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     private SubscriptionEntity subscription;
 
+    @OneToOne(mappedBy = "teamSubscription")
+    private TeamActiveSubscriptionEntity teamActiveSubscription;
+
     public void changeSubscriptionStatus(SubscriptionStatus subscriptionStatus){
         this.subscriptionStatus = subscriptionStatus;
+    }
+
+    public void unlinkTeamActiveSubscription(){
+        if (teamActiveSubscription != null){
+            teamActiveSubscription.unlinkSubscription();
+            teamActiveSubscription = null;
+        }
     }
     @Builder
     public TeamSubscriptionEntity(Long id, LocalDate startDate, LocalDate endDate, SubscriptionStatus subscriptionStatus, TeamEntity team, SubscriptionEntity subscription) {

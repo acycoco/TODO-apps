@@ -15,11 +15,18 @@ public class TeamActiveSubscriptionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "activeSubscription")
+    @OneToOne
+    @JoinColumn(name = "team_id")
     private TeamEntity team;
 
     @OneToOne
     private TeamSubscriptionEntity teamSubscription;
+
+    public void unlinkSubscription() {
+        if (teamSubscription != null){
+            teamSubscription = null;
+        }
+    }
 
     @Builder
     public TeamActiveSubscriptionEntity(Long id, TeamEntity team, TeamSubscriptionEntity teamSubscription) {
