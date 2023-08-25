@@ -1,0 +1,41 @@
+= Spring REST Docs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[resources-user]]
+== User
+
+[[resources-user]]
+=== 회원가입
+
+==== Http Request
+include::{snippets}/api/join/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/api/join/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/api/join/http-response.adoc[]
+
+=== 회원정보수정
+
+==== Http Request
+include::{snippets}/api/users/update/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/api/users/update/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/api/users/update/http-response.adoc[]
+
+=== 로그인
+
+==== Http Request
+include::{snippets}/login/http-request.adoc[]
+
+==== Request Fields
+include::{snippets}/login/request-fields.adoc[]
+
+==== Http Response
+include::{snippets}/login/http-response.adoc[]
