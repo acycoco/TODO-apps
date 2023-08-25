@@ -15,6 +15,8 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다."),
 
     NOT_MATCH_USERID(NOT_FOUND, "담당자가 아닙니다."),
+    NOT_MATCH_MANAGERID(NOT_FOUND, "팀매니저가 아닙니다."),
+    NOT_MATCH_MEMBERID(NOT_FOUND, "팀원이 아닙니다."),
     NOT_MATCH_TEAM_AND_TASK(NOT_FOUND, "해당팀의 업무가 아닙니다."),
     NOT_MATCH_TEAM_AND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당팀의 구독권이 아닙니다."),
 
