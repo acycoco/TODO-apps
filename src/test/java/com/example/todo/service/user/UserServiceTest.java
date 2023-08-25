@@ -4,6 +4,7 @@ import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.user.request.UserJoinRequestDto;
 import com.example.todo.dto.user.request.UserUpdateRequestDto;
+import com.example.todo.exception.TodoAppException;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -68,6 +69,24 @@ class UserServiceTest {
         // then
         assertThat(findUser.getPassword()).isNotEqualTo(password);
         
+    }
+    
+    @DisplayName("회원가입시 아이디 중복 여부 체크")
+    @Test
+    void duplicateUsername() {
+        // given
+        createUser("아이디", "비밀번호");
+
+        final String newUsername = "아이디";
+        UserJoinRequestDto joinDto = UserJoinRequestDto.builder()
+                .username(newUsername)
+                .password("비밀번호")
+                .build();
+
+        // when - then
+        assertThatThrownBy(() -> {
+            userService.createUser(joinDto);
+        }).isInstanceOf(TodoAppException.class);
     }
 
     private User createUser(final String username, final String password) {

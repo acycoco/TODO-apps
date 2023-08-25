@@ -7,12 +7,16 @@ import com.example.todo.dto.user.request.UserJoinRequestDto;
 import com.example.todo.dto.user.request.UserUpdateRequestDto;
 import com.example.todo.dto.user.response.UserJoinResponseDto;
 import com.example.todo.dto.user.response.UserUpdateResponseDto;
+import com.example.todo.exception.ErrorCode;
+import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import static com.example.todo.exception.ErrorCode.ALREADY_USER_USERNAME;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +28,7 @@ public class UserService {
 
     @Transactional
     public UserJoinResponseDto createUser(final UserJoinRequestDto joinDto) {
+        validateDuplicateUsername(joinDto.getUsername());
         User user = joinDto.toEntity(passwordEncoder.encode(joinDto.getPassword()));
         return new UserJoinResponseDto(userRepository.save(user));
     }
@@ -47,5 +52,12 @@ public class UserService {
                     .build();
             userRepository.save(user);
         }
+    }
+
+    private void validateDuplicateUsername(String username) {
+        userRepository.findByUsername(username)
+                .ifPresent(user -> {
+                    throw new TodoAppException(ALREADY_USER_USERNAME, ALREADY_USER_USERNAME.getMessage());
+                });
     }
 }
