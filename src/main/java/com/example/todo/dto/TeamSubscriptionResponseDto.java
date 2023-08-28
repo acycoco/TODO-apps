@@ -6,6 +6,7 @@ import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -17,6 +18,9 @@ public class TeamSubscriptionResponseDto {
     private SubscriptionStatus subscriptionStatus;
     private String teamName;
     private String subscriptionName;
+    private String merchantUid;
+    private BigDecimal SubscriptionPrice;
+    private String username;
 
     public static TeamSubscriptionResponseDto fromEntity(TeamSubscriptionEntity entity){
         TeamSubscriptionResponseDto dto = new TeamSubscriptionResponseDto();
@@ -26,6 +30,9 @@ public class TeamSubscriptionResponseDto {
         dto.setSubscriptionStatus(entity.getSubscriptionStatus());
         dto.setTeamName(entity.getTeam().getName());
         dto.setSubscriptionName(entity.getSubscription().getName());
+        dto.setMerchantUid(entity.getMerchantUid());
+        dto.setSubscriptionPrice(entity.getSubscriptionPrice());
+        dto.setUsername(entity.getTeam().getManager().getUsername());
         return dto;
     }
 

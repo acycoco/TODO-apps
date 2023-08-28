@@ -5,13 +5,15 @@ import com.example.todo.domain.entity.SubscriptionEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 public class SubscriptionResponseDto {
     private Long id;
     private String name;
     private Integer maxMember;
-    private Integer price;
+    private BigDecimal price;
     private String description;
     private Boolean status;
 

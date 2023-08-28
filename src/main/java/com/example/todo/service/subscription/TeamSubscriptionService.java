@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class TeamSubscriptionService {
         if (!team.getManager().getId().equals(managerId))
             throw new TodoAppException(ErrorCode.NOT_MATCH_MANAGERID);
     }
+
+    private String generateMerchantUid(){
+        Instant instant = Instant.now();
+        Long timestamp = instant.toEpochMilli();
+        return "order_" + timestamp;
+    }
     @Transactional
     public TeamSubscriptionResponseDto createTeamSubscription(Long teamId, Long subscriptionId, Authentication authentication){
         TeamEntity team = teamReposiotry.findById(teamId)
@@ -55,27 +62,18 @@ public class TeamSubscriptionService {
         //팀 매니저인지 확인
         checkIsTeamManager(team, Long.parseLong(authentication.getName()));
 
-        //team_subscription 활성화 상태로 생성
+        //team_subscription PENDING 상태로 생성
         TeamSubscriptionEntity teamSubscription = TeamSubscriptionEntity.builder()
                 .team(team)
                 .subscription(subscription)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(30))
-                .subscriptionStatus(SubscriptionStatus.ACTIVE)
+                .subscriptionStatus(SubscriptionStatus.PENDING)
+                .merchantUid(generateMerchantUid())
+                .subscriptionPrice(subscription.getPrice())
                 .build();
 
-        //team_active_subscription에 활성화 중인 subscription 저장
-        TeamActiveSubscriptionEntity teamActiveSubscription = TeamActiveSubscriptionEntity.builder()
-                .team(team)
-                .teamSubscription(teamSubscription)
-                .build();
 
-        teamActiveSubscriptionRepository.save(teamActiveSubscription);
-
-//        team.getTeamSubscriptions().add(teamSubscription);
-//        subscription.getTeamSubscriptions().add(teamSubscription);
-//        teamReposiotry.save(team);
-//        subscriptionRepository.save(subscription);
         return TeamSubscriptionResponseDto.fromEntity(teamSubscriptionRepository.save(teamSubscription));
     }
 
@@ -109,6 +107,7 @@ public class TeamSubscriptionService {
 
         return TeamSubscriptionResponseDto.fromEntity(teamSubscription);
     }
+
     @Transactional
     public TeamSubscriptionResponseDto readTeamActiveSubscription(Long teamId, Authentication authentication){
         TeamEntity team = teamReposiotry.findById(teamId)
@@ -128,7 +127,6 @@ public class TeamSubscriptionService {
 
 
     }
-
 
     @Transactional
     public TeamSubscriptionResponseDto updateTeamSubscription(Long teamId, Long teamSubscriptionId, Authentication authentication){

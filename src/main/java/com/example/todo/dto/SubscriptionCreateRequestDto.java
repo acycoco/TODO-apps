@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 public class SubscriptionCreateRequestDto {
@@ -15,7 +17,7 @@ public class SubscriptionCreateRequestDto {
     @Min(0) @NotNull
     private Integer maxMember;
     @Min(0) @NotNull
-    private Integer price;
+    private BigDecimal price;
     private String description;
 
     public static SubscriptionCreateRequestDto fromEntity(SubscriptionEntity entity){
