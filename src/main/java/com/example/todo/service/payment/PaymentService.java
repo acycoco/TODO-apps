@@ -3,7 +3,6 @@ package com.example.todo.service.payment;
 import com.example.todo.domain.entity.PaymentEntity;
 import com.example.todo.domain.entity.TeamActiveSubscriptionEntity;
 import com.example.todo.domain.entity.TeamSubscriptionEntity;
-import com.example.todo.domain.entity.enums.PayMethod;
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.PaymentRepository;
@@ -19,7 +18,6 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,9 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Slf4j
 @Service
