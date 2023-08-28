@@ -1,16 +1,11 @@
 package com.example.todo.dto;
 
-import com.example.todo.domain.entity.enums.PayMethod;
-import com.example.todo.domain.entity.enums.PayStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 @Data
 public class PaymentInfoDto {

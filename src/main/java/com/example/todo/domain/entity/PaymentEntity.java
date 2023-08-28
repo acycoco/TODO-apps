@@ -1,7 +1,5 @@
 package com.example.todo.domain.entity;
 
-import com.example.todo.domain.entity.enums.PayMethod;
-import com.example.todo.domain.entity.enums.PayStatus;
 import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter

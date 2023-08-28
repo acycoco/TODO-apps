@@ -1,14 +1,6 @@
 package com.example.todo.dto;
 
 import com.example.todo.domain.entity.PaymentEntity;
-import com.example.todo.domain.entity.TeamSubscriptionEntity;
-import com.example.todo.domain.entity.enums.PayMethod;
-import com.example.todo.domain.entity.enums.PayStatus;
-import com.example.todo.domain.entity.user.User;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
