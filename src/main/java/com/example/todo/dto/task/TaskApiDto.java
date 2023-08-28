@@ -8,8 +8,6 @@ import java.time.LocalDate;
 @Data
 public class TaskApiDto {
     private Long id;
-    private Long teamId;
-    private Long userId;
     @NotNull(message = "제목을 작성해주세요.")
     private String taskName;
     @NotNull(message = "설명을 작성해주세요.")
