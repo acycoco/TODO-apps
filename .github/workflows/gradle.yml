@@ -31,11 +31,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Set yml
-      run: |
-        mkdir -p src/main/resources
-        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-        find src
+#    - name: Set yml
+#      run: |
+#        mkdir -p src/main/resources
+#        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+#        find src
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
