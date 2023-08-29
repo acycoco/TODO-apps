@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -129,12 +130,9 @@ public class TeamSubscriptionService {
     }
 
     @Transactional
-    public TeamSubscriptionResponseDto updateTeamSubscription(Long teamId, Long teamSubscriptionId, Authentication authentication){
+    public TeamSubscriptionResponseDto updateTeamSubscriptionExpired(Long teamId, Long teamSubscriptionId, Authentication authentication){
         TeamEntity team = teamReposiotry.findById(teamId)
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
-
-        //팀 매니저인지 확인
-        checkIsTeamManager(team, Long.parseLong(authentication.getName()));
 
         TeamSubscriptionEntity teamSubscription = teamSubscriptionRepository.findById(teamSubscriptionId)
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM_SUBSCRIPTION));
@@ -147,12 +145,48 @@ public class TeamSubscriptionService {
 
         teamSubscription.unlinkTeamActiveSubscription();
 
-        teamActiveSubscriptionRepository.deleteAllByTeamSubscription_SubscriptionStatus(SubscriptionStatus.EXPIRED);
+        teamActiveSubscriptionRepository.delete(team.getActiveSubscription());
 
-//        if (teamActiveSubscription.getTeamSubscription().getStartDate()) 아니면 cascade로 만료된게 반영되게
         return TeamSubscriptionResponseDto.fromEntity(teamSubscriptionRepository.save(teamSubscription));
     }
 
 
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    public void scheduleTeamSubscriptionExpired(){
+
+        List<TeamSubscriptionEntity> expiredTeamSubscriptions =
+                teamSubscriptionRepository.findAllByEndDateBeforeAndSubscriptionStatus(LocalDate.now(), SubscriptionStatus.ACTIVE);
+        for (TeamSubscriptionEntity teamSubscription : expiredTeamSubscriptions) {
+
+            //만료로 상태변경
+            teamSubscription.changeSubscriptionStatus(SubscriptionStatus.EXPIRED);
+            teamSubscription.unlinkTeamActiveSubscription();
+            teamSubscriptionRepository.save(teamSubscription);
+            teamActiveSubscriptionRepository.deleteByTeamSubscription_Id(teamSubscription.getId());
+        }
+
+    }
+
+    @Transactional
+    public TeamSubscriptionResponseDto updateTeamSubscriptionCanceled(Long teamId, Long teamSubscriptionId, Authentication authentication){
+        TeamEntity team = teamReposiotry.findById(teamId)
+                .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+
+        TeamSubscriptionEntity teamSubscription = teamSubscriptionRepository.findById(teamSubscriptionId)
+                .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM_SUBSCRIPTION));
+
+        if (!teamId.equals(teamSubscription.getTeam().getId()))
+            throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TEAM_SUBSCRIPTION);
+
+        //취소로 상태변경
+        teamSubscription.changeSubscriptionStatus(SubscriptionStatus.CANCELED);
+
+        teamSubscription.unlinkTeamActiveSubscription();
+
+        teamActiveSubscriptionRepository.delete(team.getActiveSubscription());
+
+        return TeamSubscriptionResponseDto.fromEntity(teamSubscriptionRepository.save(teamSubscription));
+    }
 
 }
