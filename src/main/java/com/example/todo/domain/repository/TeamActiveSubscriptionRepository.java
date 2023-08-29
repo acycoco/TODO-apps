@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface TeamActiveSubscriptionRepository extends JpaRepository<TeamActiveSubscriptionEntity, Long> {
     Optional<TeamActiveSubscriptionEntity> findByTeam(TeamEntity team);
     void deleteAllByTeamSubscription_SubscriptionStatus(SubscriptionStatus subscriptionStatus);
+    void deleteByTeamSubscription_Id(Long id);
 }

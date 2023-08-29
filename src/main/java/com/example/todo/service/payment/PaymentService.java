@@ -43,6 +43,8 @@ public class PaymentService {
         this.iamportClient = iamportClient;
     }
 
+
+
     @Transactional
     public PaymentResponseDto processPayment(PaymentInfoDto paymentInfo, Authentication authentication){
         TeamSubscriptionEntity teamSubscription = teamSubscriptionRepository.findByMerchantUid(paymentInfo.getMerchantUid())
@@ -105,8 +107,18 @@ public class PaymentService {
     }
 
     @Transactional
-    public IamportResponse<Payment> cancelPayment(String impUid) throws IamportResponseException, IOException {
-        CancelData cancelData = new CancelData(impUid, true);
-        return iamportClient.cancelPaymentByImpUid(cancelData);
+    public void cancelPayment(String impUid, BigDecimal amount) throws IamportResponseException, IOException {
+        IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(impUid);
+        if (!iamportResponse.getResponse().getAmount().equals(amount)){
+            //환불 금액이 결제된 금액과 다름
+            throw new TodoAppException(ErrorCode.NOT_MATCH_IAMPORT_CANCEL_AMOUNT);
+        }
+        CancelData cancelData = new CancelData(iamportResponse.getResponse().getImpUid(), true);
+        cancelData.setChecksum(amount);
+        IamportResponse<Payment> result = iamportClient.cancelPaymentByImpUid(cancelData); //이미 취소된 거래는 response가 null이다.
+
+        if (result == null){
+            throw new TodoAppException(ErrorCode.ALREADY_CANCELED);
+        }
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,24 @@ public class PaymentApiController {
         }
     }
 
+    @PostMapping("/cancelPayment")
+    public ResponseEntity<Map<String, String>> cancelPayment(
+            @RequestBody Map<String, String> map
+    ) throws IamportResponseException, IOException {
+        try {
+
+            paymentService.cancelPayment(map.get("impUid"), BigDecimal.valueOf(Integer.parseInt(map.get("amount"))));
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "결제 환불 완료");
+            return ResponseEntity.ok(response);
+        } catch (TodoAppException ex) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "결제 환불 실패: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 
 
