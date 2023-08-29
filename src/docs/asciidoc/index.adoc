@@ -10,32 +10,33 @@
 === 회원가입
 
 ==== Http Request
-include::{snippets}/api/join/http-request.adoc[]
+// include::{snippets}/api/join/http-request.adoc[]
+include::{snippets}/회원가입/http-request.adoc[]
 
 ==== Request Fields
-include::{snippets}/api/join/request-fields.adoc[]
+include::{snippets}/회원가입/request-fields.adoc[]
 
 ==== Http Response
-include::{snippets}/api/join/http-response.adoc[]
+include::{snippets}/회원가입/http-response.adoc[]
 
 === 회원정보수정
 
 ==== Http Request
-include::{snippets}/api/users/update/http-request.adoc[]
+include::{snippets}/회원정보수정/http-request.adoc[]
 
 ==== Request Fields
-include::{snippets}/api/users/update/request-fields.adoc[]
+include::{snippets}/회원정보수정/request-fields.adoc[]
 
 ==== Http Response
-include::{snippets}/api/users/update/http-response.adoc[]
+include::{snippets}/회원정보수정/http-response.adoc[]
 
 === 로그인
 
 ==== Http Request
-include::{snippets}/login/http-request.adoc[]
+include::{snippets}/로그인/http-request.adoc[]
 
 ==== Request Fields
-include::{snippets}/login/request-fields.adoc[]
+include::{snippets}/로그인/request-fields.adoc[]
 
 ==== Http Response
-include::{snippets}/login/http-response.adoc[]
+include::{snippets}/로그인/http-response.adoc[]

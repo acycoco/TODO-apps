@@ -88,7 +88,7 @@ class UserApiControllerTest {
 
         // then
         perform.andExpect(status().isOk())
-                .andDo(document("/api/join",
+                .andDo(document("회원가입",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -135,7 +135,7 @@ class UserApiControllerTest {
 
         // then
         perform.andExpect(status().isOk())
-                .andDo(document("/api/users/update",
+                .andDo(document("회원정보수정",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -169,7 +169,7 @@ class UserApiControllerTest {
 
         // then
         perform.andExpect(status().isOk())
-                .andDo(document("/login",
+                .andDo(document("로그인",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
