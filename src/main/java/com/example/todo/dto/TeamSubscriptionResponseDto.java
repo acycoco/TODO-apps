@@ -44,6 +44,9 @@ public class TeamSubscriptionResponseDto {
         dto.setSubscriptionStatus(entity.getTeamSubscription().getSubscriptionStatus());
         dto.setTeamName(entity.getTeam().getName());
         dto.setSubscriptionName(entity.getTeamSubscription().getSubscription().getName());
+        dto.setMerchantUid(entity.getTeamSubscription().getMerchantUid());
+        dto.setSubscriptionPrice(entity.getTeamSubscription().getSubscriptionPrice());
+        dto.setUsername(entity.getTeam().getManager().getUsername());
         return dto;
     }
 
