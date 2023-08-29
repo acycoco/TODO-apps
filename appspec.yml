@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source:  /
-    destination: /home/ubuntu/Final_Project_10team
+    destination: /home/ubuntu/app
     overwrite: yes
 
 permissions:

@@ -13,6 +13,6 @@ else
   sleep 5
 fi
 
-cd /home/ubuntu/Final_Project_10team
+cd /home/ubuntu/app
 sudo docker build -t ap .
 sudo docker run -d -p 8080:8080 ap
