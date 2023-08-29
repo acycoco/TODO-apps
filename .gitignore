@@ -38,3 +38,9 @@ out/
 
 ### Querydsl
 /src/main/generated
+
+### db.sqlite
+db.sqlite
+
+###
+application.yml
