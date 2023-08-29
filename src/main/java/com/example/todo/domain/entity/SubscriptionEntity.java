@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class SubscriptionEntity {
     private Long id;
     private String name;
     private Integer maxMember;
-    private Integer price;
+    private BigDecimal price;
     private String description;
     private Boolean status;
 
@@ -34,7 +35,7 @@ public class SubscriptionEntity {
     }
 
 
-    public void changePrice(Integer price){
+    public void changePrice(BigDecimal price){
         this.price = price;
     }
 
@@ -47,7 +48,7 @@ public class SubscriptionEntity {
     }
 
     @Builder
-    public SubscriptionEntity(Long id, String name, Integer maxMember, Integer price, String description, Boolean status) {
+    public SubscriptionEntity(Long id, String name, Integer maxMember, BigDecimal price, String description, Boolean status) {
         this.id = id;
         this.name = name;
         this.maxMember = maxMember;

@@ -63,6 +63,11 @@ public class TeamService {
 
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
 
+        //팀 멤버수 제한
+        if (team.getMember().size() == team.getActiveSubscription().getTeamSubscription().getSubscription().getMaxMember()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "팀이 구독한 구독권의 최대 허용 멤버 수를 초과했습니다. 새 구독권을 구독해주세요.");
+        }
+
         if (memberRepository.findByTeamAndUser(team, user).isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 해당 팀에 가입했음!");
 
         MemberEntity member = new MemberEntity();
@@ -72,6 +77,8 @@ public class TeamService {
 
         team.getMember().add(member);
         teamReposiotry.save(team);
+
+
     }
 
     public void updateTeamDetails(Long userId, TeamUpdateDto teamUpdateDto, Long teamId) {
@@ -139,5 +146,7 @@ public class TeamService {
         teamReposiotry.save(team);
 
         memberRepository.delete(member);
+
+
     }
 }

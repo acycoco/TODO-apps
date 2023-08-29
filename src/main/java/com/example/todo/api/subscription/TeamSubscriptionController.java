@@ -61,13 +61,13 @@ public class TeamSubscriptionController {
     }
 
     @PutMapping("/{teamSubscriptionId}")
-    public Response<TeamSubscriptionResponseDto> update(
+    public Response<TeamSubscriptionResponseDto> updateExpired(
             @PathVariable("teamId") Long teamId,
             @PathVariable("teamSubscriptionId") Long teamSubscriptionId,
             Authentication authentication
     ){
         return Response.success(
-                teamSubscriptionService.updateTeamSubscription(teamId, teamSubscriptionId, authentication)
+                teamSubscriptionService.updateTeamSubscriptionExpired(teamId, teamSubscriptionId, authentication)
         );
     }
 
