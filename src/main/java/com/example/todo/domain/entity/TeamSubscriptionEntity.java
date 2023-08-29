@@ -43,7 +43,6 @@ public class TeamSubscriptionEntity {
 
     public void unlinkTeamActiveSubscription(){
         if (teamActiveSubscription != null){
-            teamActiveSubscription.unlinkSubscription();
             teamActiveSubscription = null;
         }
     }
