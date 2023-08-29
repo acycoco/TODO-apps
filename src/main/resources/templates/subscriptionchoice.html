@@ -49,13 +49,12 @@
             var subscriptionSelect = document.getElementById('subscriptionSelect');
             var subscriptionId = subscriptionSelect.value; // 구독권 ID 가져오기
 
-            var headers = new Headers();
-            headers.append('Authorization', 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTMxNDc0MDgsImV4cCI6MTY5MzE1MTAwOCwiaWQiOjIsInJvbGUiOiJVU0VSIn0.g5mJBId2EIJ45hJ8tQY_iud5PfMsUUIhJ4uTMp2VKe0');
+            // var headers = new Headers();
+            // headers.append('Authorization', 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTMxNDc0MDgsImV4cCI6MTY5MzE1MTAwOCwiaWQiOjIsInJvbGUiOiJVU0VSIn0.g5mJBId2EIJ45hJ8tQY_iud5PfMsUUIhJ4uTMp2VKe0');
 
             // 팀 구독권 생성 요청 보내기 (POST /api/team/{teamId}/subscription/{subscriptionId})
             fetch(`/api/team/${teamId}/subscription/${subscriptionId}`, {
-                method: 'POST',
-                headers: headers
+                method: 'POST'
             })
                 .then(response => response.json())
                 .then(data => {
