@@ -8,6 +8,7 @@ import com.example.todo.service.todo.TodoApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +19,11 @@ public class TodoApiController {
     private final TodoApiService service;
 
     @PostMapping
-    public ResponseDto create(@RequestBody TodoApiDto todoApiDto) {
-        return service.createTodo(todoApiDto);
+    public ResponseDto create(
+            @RequestBody TodoApiDto todoApiDto,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.createTodo(userId,todoApiDto);
     }
 
     //Todo 상세 조회
@@ -40,13 +44,18 @@ public class TodoApiController {
     @PutMapping("/{todoId}")
     public ResponseDto update(
             @PathVariable("todoId") Long todoId,
-            @RequestBody TodoApiDto todoApiDto) {
-        return service.updateTodo(todoId, todoApiDto);
+            @RequestBody TodoApiDto todoApiDto,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.updateTodo(userId, todoId, todoApiDto);
     }
     //Todo 삭제
     @DeleteMapping("/{todoId}")
-    public ResponseDto delete(@PathVariable("todoId") Long todoId) {
-        return service.deleteTodo(todoId);
+    public ResponseDto delete(
+            @PathVariable("todoId") Long todoId,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.deleteTodo(userId, todoId);
     }
     //Todo 좋아요 추가, 취소 기능
     @PostMapping("/{todoId}/like")
