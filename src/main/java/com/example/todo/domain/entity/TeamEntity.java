@@ -25,6 +25,4 @@ public class TeamEntity {
     @OneToMany
     private List<MemberEntity> member;
 
-    @OneToMany(mappedBy = "team")
-    private List<UsersSubscriptionEntity> teamSubscriptions;
 }

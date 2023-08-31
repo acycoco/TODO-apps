@@ -35,11 +35,11 @@ public class PaymentEntity {
     private User user;
 
     @OneToOne
-    private UsersSubscriptionEntity userSubscription;
+    private UsersSubscriptionEntity usersSubscription;
 
 
     @Builder
-    public PaymentEntity(Long id, String impUid, BigDecimal amount, String merchantUid, String payStatus, String payMethod, LocalDateTime paymentDate, User user, UsersSubscriptionEntity userSubscription) {
+    public PaymentEntity(Long id, String impUid, BigDecimal amount, String merchantUid, String payStatus, String payMethod, LocalDateTime paymentDate, User user, UsersSubscriptionEntity usersSubscription) {
         this.id = id;
         this.impUid = impUid;
         this.amount = amount;
@@ -48,6 +48,6 @@ public class PaymentEntity {
         this.payMethod = payMethod;
         this.paymentDate = paymentDate;
         this.user = user;
-        this.userSubscription = userSubscription;
+        this.usersSubscription = usersSubscription;
     }
 }
