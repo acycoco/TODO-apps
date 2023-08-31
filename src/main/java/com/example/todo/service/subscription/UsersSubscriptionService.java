@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -31,10 +32,14 @@ public class UsersSubscriptionService {
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
 
-
     private String generateMerchantUid(){
-        return "order_" + UUID.randomUUID();
+        Instant instant = Instant.now();
+        Long timestamp = instant.toEpochMilli();
+        return "order_" + timestamp;
     }
+//    private String generateMerchantUid(){
+//        return "order_" + UUID.randomUUID();
+//    }
 
     @Transactional
     public UsersSubscriptionResponseDto createUsersSubscription(Long userId, Long subscriptionId){

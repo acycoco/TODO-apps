@@ -32,7 +32,7 @@ public class UsersSubscriptionEntity {
     private SubscriptionEntity subscription;
 
 
-    @OneToOne(mappedBy = "teamSubscription")
+    @OneToOne(mappedBy = "usersSubscription")
     private PaymentEntity payment;
 
 
@@ -40,11 +40,7 @@ public class UsersSubscriptionEntity {
         this.subscriptionStatus = subscriptionStatus;
     }
 
-//    public void unlinkTeamActiveSubscription(){
-//        if (teamActiveSubscription != null){
-//            teamActiveSubscription = null;
-//        }
-//    }
+
     @Builder
     public UsersSubscriptionEntity(Long id, LocalDate startDate, LocalDate endDate, SubscriptionStatus subscriptionStatus, BigDecimal subscriptionPrice, String merchantUid, User users, SubscriptionEntity subscription, PaymentEntity payment) {
         this.id = id;
