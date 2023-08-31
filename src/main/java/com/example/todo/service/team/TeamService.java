@@ -9,6 +9,8 @@ import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
 import com.example.todo.dto.team.TeamUpdateDto;
+import com.example.todo.exception.ErrorCode;
+import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,10 +31,8 @@ public class TeamService {
     @Transactional
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
 
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
+        User manager = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
-        User manager = optionalUser.get();
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName(teamCreateDto.getName());
         teamEntity.setDescription(teamCreateDto.getDescription());
@@ -53,13 +53,9 @@ public class TeamService {
 
     @Transactional
     public void joinTeam(Long userId, TeamJoinDto teamJoinDto, Long teamId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
-        User user = optionalUser.get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
-        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
-        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀 존재 X");
-        TeamEntity team = optionalTeamEntity.get();
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
 
@@ -68,7 +64,7 @@ public class TeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "팀이 구독한 구독권의 최대 허용 멤버 수를 초과했습니다. 새 구독권을 구독해주세요.");
         }
 
-        if (memberRepository.findByTeamAndUser(team, user).isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 해당 팀에 가입했음!");
+        if (memberRepository.findByTeamAndUser(team, user).isPresent()) throw new TodoAppException(ErrorCode.ALREADY_USER_JOINED);
 
         MemberEntity member = new MemberEntity();
         member.setTeam(team);
@@ -82,18 +78,11 @@ public class TeamService {
     }
 
     public void updateTeamDetails(Long userId, TeamUpdateDto teamUpdateDto, Long teamId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
-        User user = optionalUser.get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
-        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
-        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀 존재 X");
-        TeamEntity team = optionalTeamEntity.get();
+        if (team.getManagerId() != user.getId()) throw new TodoAppException(ErrorCode.MISMATCH_MANAGERID_USERID);
 
-        if (team.getManagerId() != user.getId()) {
-            log.info("현 관리자가 아닙니다!");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현 관리자가 아닙니다.");
-        }
 
         if (teamUpdateDto.getName() != null) {
             team.setName(teamUpdateDto.getName());
@@ -114,39 +103,21 @@ public class TeamService {
     }
 
     public void deleteTeam(Long userId, Long teamId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
-        User user = optionalUser.get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
-        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
-        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀 존재 X");
-        TeamEntity team = optionalTeamEntity.get();
+        if (team.getManagerId() != user.getId()) throw new TodoAppException(ErrorCode.MISMATCH_MANAGERID_USERID);
 
-        if (team.getManager().getId() != user.getId()) {
-            log.info("현 관리자가 아닙니다!");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현 관리자가 아닙니다.");
-        }
         teamReposiotry.delete(team);
     }
     @Transactional
     public void leaveTeam(Long userId, Long teamId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저 존재 X");
-        User user = optionalUser.get();
-
-        Optional<TeamEntity> optionalTeamEntity = teamReposiotry.findById(teamId);
-        if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀 존재 X");
-        TeamEntity team = optionalTeamEntity.get();
-
-        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByTeamAndUser(team, user);
-        if (optionalMemberEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀에 가입X");
-        MemberEntity member = optionalMemberEntity.get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+        MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
         team.getMember().remove(member);
         teamReposiotry.save(team);
-
         memberRepository.delete(member);
-
-
     }
 }
