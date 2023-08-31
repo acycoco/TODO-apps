@@ -90,7 +90,7 @@ public class TeamService {
         if (optionalTeamEntity.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 팀 존재 X");
         TeamEntity team = optionalTeamEntity.get();
 
-        if (team.getManager().getId() != user.getId()) {
+        if (team.getManagerId() != user.getId()) {
             log.info("현 관리자가 아닙니다!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현 관리자가 아닙니다.");
         }
