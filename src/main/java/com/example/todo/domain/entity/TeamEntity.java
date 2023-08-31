@@ -4,12 +4,13 @@ import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class TeamEntity {
+public class TeamEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,5 +25,11 @@ public class TeamEntity {
 
     @OneToMany
     private List<MemberEntity> member;
+
+
+   
+    public Long getManagerId() {
+        return manager.getId();
+    }
 
 }

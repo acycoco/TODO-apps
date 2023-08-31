@@ -32,14 +32,16 @@ public enum ErrorCode {
     NOT_FOUND_TODO(NOT_FOUND, "해당TODO가 존재하지 않습니다."),
     NOT_FOUND_USER(NOT_FOUND, "해당USER가 존재하지 않습니다."),
     NOT_FOUND_TASK(NOT_FOUND, "해당업무가 존재하지 않습니다."),
+    NOT_FOUND_MEMBER(NOT_FOUND, "해당 팀에 가입된 상태가 아닙니다."),
 
     NOT_FOUND_SUBSCRIPTION(NOT_FOUND, "해당구독권이 존재하지 않습니다."),
     NOT_FOUND_USERS_SUBSCRIPTION(NOT_FOUND, "해당 유저_구독이 존재하지 않습니다."),
     NOT_FOUND_ACTIVE_SUBSCRIPTION(NOT_FOUND, "해당 활성화된 구독권이 존재하지 않습니다."),
 
 
-    ALREADY_USER_USERNAME(CONFLICT, "이미 존재하는 사용자입니다.");
-
+    ALREADY_USER_USERNAME(CONFLICT, "이미 존재하는 사용자입니다."),
+    ALREADY_USER_JOINED(BAD_REQUEST, "이미 해당 팀에 가입한 유저입니다."),
+    MISMATCH_MANAGERID_USERID(BAD_REQUEST, "팀의 관리자가 아닙니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
