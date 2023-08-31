@@ -1,8 +1,8 @@
 package com.example.todo.config.filter;
 
 import com.example.todo.domain.entity.user.PrincipalUserDetails;
-import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.token.RefreshTokenRepository;
+import com.example.todo.dto.user.request.UserLoginRequestDto;
 import com.example.todo.jwt.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -33,7 +33,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            User user = objectMapper.readValue(request.getInputStream(), User.class);
+            UserLoginRequestDto user = objectMapper.readValue(request.getInputStream(), UserLoginRequestDto.class);
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());

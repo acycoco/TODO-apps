@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <h1>결제 요청</h1>
+    <label for="teamId">팀 ID:</label>
+    <input type="number" id="teamId" name="teamId"><br><br>
+
+    <label for="subscriptionSelect">구독권:</label>
+    <select id="subscriptionSelect"></select><br><br>
+
+
+    <button onclick="createSubscriptionAndRedirect()">결제 페이지로 이동</button>
+
+    <script>
+        // 클라이언트 측에서 활성화된 구독권 정보를 받아오는 함수 (fetch 사용)
+        function fetchActiveSubscriptionsAndPopulateFields() {
+            var apiEndpoint = '/api/subscription';
+            var queryParams = '?page=0&limit=5'; // 페이지 및 리미트 설정
+
+            fetch(apiEndpoint + queryParams)
+                .then(response => response.json())
+                .then(subscriptions => {
+                    console.log(subscriptions)
+                    var subscriptionSelect = document.getElementById('subscriptionSelect');
+                    subscriptionSelect.innerHTML = ''; // 기존 옵션 제거
+
+                    subscriptions.content.forEach(subscription => {
+                        var option = document.createElement('option');
+                        option.value = subscription.id; // 구독권 ID 또는 식별자
+                        option.textContent = subscription.name; // 구독권 이름
+                        subscriptionSelect.appendChild(option);
+                    });
+
+                })
+                .catch(error => console.error('구독권 정보를 받아오는 중 오류 발생:', error));
+        }
+
+        window.onload = fetchActiveSubscriptionsAndPopulateFields;
+
+    </script>
+    <script>
+        function createSubscriptionAndRedirect() {
+            var teamId = document.getElementById('teamId').value;
+            var subscriptionSelect = document.getElementById('subscriptionSelect');
+            var subscriptionId = subscriptionSelect.value; // 구독권 ID 가져오기
+
+            // var headers = new Headers();
+            // headers.append('Authorization', 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTMxNDc0MDgsImV4cCI6MTY5MzE1MTAwOCwiaWQiOjIsInJvbGUiOiJVU0VSIn0.g5mJBId2EIJ45hJ8tQY_iud5PfMsUUIhJ4uTMp2VKe0');
+
+            // 팀 구독권 생성 요청 보내기 (POST /api/team/{teamId}/subscription/{subscriptionId})
+            fetch(`/api/team/${teamId}/subscription/${subscriptionId}`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // 생성된 팀 구독 ID와 결제 페이지로 이동
+                    console.log(data)
+                    var teamSubscriptionId = data.date.id;
+                    console.log(teamSubscriptionId)
+                    window.location.href = `/api/team/${teamId}/subscription/${teamSubscriptionId}/payment`;
+                })
+                .catch(error => console.error('팀 구독 생성 요청 오류:', error));
+        }
+    </script>
+</body>
+</html>

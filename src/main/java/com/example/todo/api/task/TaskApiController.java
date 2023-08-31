@@ -46,8 +46,10 @@ public class TaskApiController {
     public ResponseDto update(
             @PathVariable("teamId") Long teamId,
             @PathVariable("taskId") Long taskId,
-            @RequestBody TaskApiDto taskApiDto) {
-        return service.updateTask(teamId, taskId, taskApiDto);
+            @RequestBody TaskApiDto taskApiDto,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.updateTask(userId, teamId, taskId, taskApiDto);
     }
 
     //삭제
@@ -56,6 +58,7 @@ public class TaskApiController {
             @PathVariable("teamId") Long itemId,
             @PathVariable("taskId") Long taskId,
             Authentication authentication) {
-        return service.deleteTask(itemId, taskId, authentication);
+        Long userId = Long.parseLong(authentication.getName());
+        return service.deleteTask(userId, itemId, taskId);
     }
 }
