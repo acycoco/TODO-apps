@@ -7,8 +7,8 @@
 </head>
 <body>
     <h1>결제 요청</h1>
-    <label for="teamId">팀 ID:</label>
-    <input type="number" id="teamId" name="teamId"><br><br>
+    <label for="userId">user ID:</label>
+    <input type="number" id="userId" name="userId"><br><br>
 
     <label for="subscriptionSelect">구독권:</label>
     <select id="subscriptionSelect"></select><br><br>
@@ -45,24 +45,24 @@
     </script>
     <script>
         function createSubscriptionAndRedirect() {
-            var teamId = document.getElementById('teamId').value;
+            var userId = document.getElementById('userId').value;
             var subscriptionSelect = document.getElementById('subscriptionSelect');
             var subscriptionId = subscriptionSelect.value; // 구독권 ID 가져오기
 
             // var headers = new Headers();
             // headers.append('Authorization', 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTMxNDc0MDgsImV4cCI6MTY5MzE1MTAwOCwiaWQiOjIsInJvbGUiOiJVU0VSIn0.g5mJBId2EIJ45hJ8tQY_iud5PfMsUUIhJ4uTMp2VKe0');
 
-            // 팀 구독권 생성 요청 보내기 (POST /api/team/{teamId}/subscription/{subscriptionId})
-            fetch(`/api/team/${teamId}/subscription/${subscriptionId}`, {
+            // 팀 구독권 생성 요청 보내기 (POST /api/users/{userId}/subscription/{subscriptionId})
+            fetch(`/api/users/${userId}/subscription/${subscriptionId}`, {
                 method: 'POST'
             })
                 .then(response => response.json())
                 .then(data => {
                     // 생성된 팀 구독 ID와 결제 페이지로 이동
                     console.log(data)
-                    var teamSubscriptionId = data.date.id;
-                    console.log(teamSubscriptionId)
-                    window.location.href = `/api/team/${teamId}/subscription/${teamSubscriptionId}/payment`;
+                    var usersSubscriptionId = data.date.id;
+                    console.log(usersSubscriptionId)
+                    window.location.href = `/api/users/${userId}/subscription/${usersSubscriptionId}/payment`;
                 })
                 .catch(error => console.error('팀 구독 생성 요청 오류:', error));
         }
