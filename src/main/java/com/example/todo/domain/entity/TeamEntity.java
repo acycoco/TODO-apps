@@ -4,18 +4,21 @@ import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class TeamEntity {
+public class TeamEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
     private String joinCode;
+    private Integer participantNum;
+    private Integer participantNumMax;
 
     @ManyToOne
     private User manager;
@@ -23,9 +26,10 @@ public class TeamEntity {
     @OneToMany
     private List<MemberEntity> member;
 
-    @OneToOne(mappedBy = "team", cascade = CascadeType.REMOVE)
-    private TeamActiveSubscriptionEntity activeSubscription;
 
-    @OneToMany(mappedBy = "team")
-    private List<TeamSubscriptionEntity> teamSubscriptions;
+   
+    public Long getManagerId() {
+        return manager.getId();
+    }
+
 }

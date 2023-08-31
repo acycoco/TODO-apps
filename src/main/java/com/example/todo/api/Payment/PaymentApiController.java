@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/team/{teamId}/subscription/{teamSubscriptionId}/payment")
+@RequestMapping("/api/users/{userId}/subscription/{usersSubscriptionId}/payment")
 @RequiredArgsConstructor
 public class PaymentApiController {
     private final PaymentService paymentService;
@@ -40,6 +40,8 @@ public class PaymentApiController {
             @RequestBody PaymentInfoDto paymentInfoDto
     ) throws IamportResponseException, IOException {
         try {
+            log.info(" {} ",paymentInfoDto.getImpUid());
+            log.info("{}", paymentInfoDto.getPaidAmount());
             paymentService.verifyIamport(paymentInfoDto.getImpUid(), paymentInfoDto.getPaidAmount());
             Map<String, String> response = new HashMap<>();
             response.put("status", "success");

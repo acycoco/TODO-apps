@@ -24,7 +24,7 @@ public class SubscriptionEntity {
     private Boolean status;
 
     @OneToMany(mappedBy = "subscription")
-    private List<TeamSubscriptionEntity> teamSubscriptions;
+    private List<UsersSubscriptionEntity> userSubscriptions;
 
     public void changeName(String name){
         this.name = name;

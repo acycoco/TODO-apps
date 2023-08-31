@@ -12,4 +12,5 @@ public class TeamCreateDto {
     private String description;
     //Validation 추가 필요
     private String joinCode;
+    private Integer participantNum;
 }
