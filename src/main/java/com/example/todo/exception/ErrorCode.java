@@ -17,6 +17,7 @@ public enum ErrorCode {
     INVALID_PAYMENT_STATUS(BAD_REQUEST, "유효하지 않은 결제 상태입니다."),
     NOT_MATCH_IAMPORT_CANCEL_AMOUNT(BAD_REQUEST, "환불 요청 금액과 서버의 결제금액이 다릅니다."),
     ALREADY_CANCELED(BAD_REQUEST, "이미 환불된 결제입니다."),
+    EXCEED_ALLOWED_TEAM_MEMBERS(BAD_REQUEST, "허용된 최대인원을 초과했습니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다."),
 
@@ -24,7 +25,7 @@ public enum ErrorCode {
     NOT_MATCH_MANAGERID(NOT_FOUND, "팀매니저가 아닙니다."),
     NOT_MATCH_MEMBERID(NOT_FOUND, "팀원이 아닙니다."),
     NOT_MATCH_TEAM_AND_TASK(NOT_FOUND, "해당팀의 업무가 아닙니다."),
-    NOT_MATCH_TEAM_AND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당팀의 구독권이 아닙니다."),
+    NOT_MATCH_USERS_AND_USERS_SUBSCRIPTION(NOT_FOUND, "해당팀의 구독권이 아닙니다."),
 
     NOT_FOUND_ENTITY(NOT_FOUND, "데이터가 존재하지 않습니다."),
     NOT_FOUND_TEAM(NOT_FOUND, "해당팀이 존재하지 않습니다."),
@@ -34,7 +35,7 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER(NOT_FOUND, "해당 팀에 가입된 상태가 아닙니다."),
 
     NOT_FOUND_SUBSCRIPTION(NOT_FOUND, "해당구독권이 존재하지 않습니다."),
-    NOT_FOUND_TEAM_SUBSCRIPTION(NOT_FOUND, "해당 팀_구독권이 존재하지 않습니다."),
+    NOT_FOUND_USERS_SUBSCRIPTION(NOT_FOUND, "해당 유저_구독이 존재하지 않습니다."),
     NOT_FOUND_ACTIVE_SUBSCRIPTION(NOT_FOUND, "해당 활성화된 구독권이 존재하지 않습니다."),
 
 

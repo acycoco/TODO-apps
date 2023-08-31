@@ -17,6 +17,8 @@ public class TeamEntity extends BaseTimeEntity {
     private String name;
     private String description;
     private String joinCode;
+    private Integer participantNum;
+    private Integer participantNumMax;
 
     @ManyToOne
     private User manager;
@@ -24,13 +26,10 @@ public class TeamEntity extends BaseTimeEntity {
     @OneToMany
     private List<MemberEntity> member;
 
-    @OneToOne(mappedBy = "team", cascade = CascadeType.REMOVE)
-    private TeamActiveSubscriptionEntity activeSubscription;
 
-    @OneToMany(mappedBy = "team")
-    private List<TeamSubscriptionEntity> teamSubscriptions;
-
+   
     public Long getManagerId() {
         return manager.getId();
     }
+
 }

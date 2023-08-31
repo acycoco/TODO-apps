@@ -1,8 +1,8 @@
 package com.example.todo.api.subscription;
 
 import com.example.todo.domain.Response;
-import com.example.todo.dto.TeamSubscriptionResponseDto;
-import com.example.todo.service.subscription.TeamSubscriptionService;
+import com.example.todo.dto.UsersSubscriptionResponseDto;
+import com.example.todo.service.subscription.UsersSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,62 +12,57 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/team/{teamId}/subscription")
+@RequestMapping("/api/users/{userId}/subscription")
 public class TeamSubscriptionController {
-    private final TeamSubscriptionService teamSubscriptionService;
+    private final UsersSubscriptionService usersSubscriptionService;
 
     @PostMapping("/{subscriptionId}")
-    public Response<TeamSubscriptionResponseDto> create(
-            @PathVariable("teamId") Long teamId,
-            @PathVariable("subscriptionId") Long subscriptionId,
-            Authentication authentication
+    public Response<UsersSubscriptionResponseDto> create(
+            @PathVariable("userId") Long userId,
+            @PathVariable("subscriptionId") Long subscriptionId
     ){
         return Response.success(
-                teamSubscriptionService.createTeamSubscription(teamId, subscriptionId, authentication)
+                usersSubscriptionService.createUsersSubscription(userId, subscriptionId)
         );
     }
 
     @GetMapping
-    public Response<Page<TeamSubscriptionResponseDto>> readAll(
-            @PathVariable("teamId") Long teamId,
+    public Response<Page<UsersSubscriptionResponseDto>> readAll(
+            @PathVariable("userId") Long userId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "limit", defaultValue = "5") Integer limit,
-            Authentication authentication
+            @RequestParam(value = "limit", defaultValue = "5") Integer limit
     ){
         return Response.success(
-                teamSubscriptionService.readAllTeamSubscription(teamId, page, limit , authentication)
+                usersSubscriptionService.readAllUsersSubscription(userId, page, limit)
         );
     }
 
-    @GetMapping("/{teamSubscriptionId}")
-    public Response<TeamSubscriptionResponseDto> read(
-            @PathVariable("teamId") Long teamId,
-            @PathVariable("teamSubscriptionId") Long teamSubscriptionId,
-            Authentication authentication
+    @GetMapping("/{usersSubscriptionId}")
+    public Response<UsersSubscriptionResponseDto> read(
+            @PathVariable("userId") Long userId,
+            @PathVariable("usersSubscriptionId") Long usersSubscriptionId
     ){
         return Response.success(
-                teamSubscriptionService.readTeamSubscription(teamId, teamSubscriptionId, authentication)
+                usersSubscriptionService.readUsersSubscription(userId, usersSubscriptionId)
         );
     }
 
     @GetMapping("/active-subscription")
-    public Response<TeamSubscriptionResponseDto> readActive(
-            @PathVariable("teamId") Long teamId,
-            Authentication authentication
+    public Response<UsersSubscriptionResponseDto> readActive(
+            @PathVariable("userId") Long userId
     ){
         return Response.success(
-                teamSubscriptionService.readTeamActiveSubscription(teamId, authentication)
+                usersSubscriptionService.readUsersSubscriptionActive(userId)
         );
     }
 
-    @PutMapping("/{teamSubscriptionId}")
-    public Response<TeamSubscriptionResponseDto> updateExpired(
-            @PathVariable("teamId") Long teamId,
-            @PathVariable("teamSubscriptionId") Long teamSubscriptionId,
-            Authentication authentication
+    @PutMapping("/{usersSubscriptionId}")
+    public Response<UsersSubscriptionResponseDto> updateExpired(
+            @PathVariable("userId") Long userId,
+            @PathVariable("usersSubscriptionId") Long usersSubscriptionId
     ){
         return Response.success(
-                teamSubscriptionService.updateTeamSubscriptionExpired(teamId, teamSubscriptionId, authentication)
+                usersSubscriptionService.updateUsersSubscriptionExpired(userId, usersSubscriptionId)
         );
     }
 
