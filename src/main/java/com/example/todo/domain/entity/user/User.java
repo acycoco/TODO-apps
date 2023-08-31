@@ -38,4 +38,9 @@ public class User {
         this.phone = updateDto.getPhone();
         this.profileImage = profileImage;
     }
+
+    public User update(String picture) {
+        this.profileImage = picture;
+        return this;
+    }
 }
