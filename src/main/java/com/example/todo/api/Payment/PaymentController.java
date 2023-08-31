@@ -1,7 +1,7 @@
 package com.example.todo.api.Payment;
 
-import com.example.todo.dto.TeamSubscriptionResponseDto;
-import com.example.todo.service.subscription.TeamSubscriptionService;
+import com.example.todo.dto.UsersSubscriptionResponseDto;
+import com.example.todo.service.subscription.UsersSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,18 +12,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @RequiredArgsConstructor
 public class PaymentController {
-    private final TeamSubscriptionService teamSubscriptionService;
-    @GetMapping("/api/team/{teamId}/subscription/{teamSubscriptionId}/payment")
+    private final UsersSubscriptionService usersSubscriptionService;
+    @GetMapping("/api/users/{userId}/subscription/{usersSubscriptionId}/payment")
     public String showPaymentPage(
-            @PathVariable Long teamId,
-            @PathVariable Long teamSubscriptionId,
-            Model model,
-            Authentication authentication
+            @PathVariable("userId") Long userId,
+            @PathVariable("usersSubscriptionId") Long usersSubscriptionId,
+            Model model
     ) {
-        TeamSubscriptionResponseDto teamSubscription = teamSubscriptionService.readTeamSubscription(teamId, teamSubscriptionId, authentication);
-        model.addAttribute("teamId", teamId);
-        model.addAttribute("teamSubscriptionId", teamSubscriptionId);
-        model.addAttribute("teamSubscription", teamSubscription);
+        UsersSubscriptionResponseDto usersSubscription = usersSubscriptionService.readUsersSubscription(userId, usersSubscriptionId);
+        model.addAttribute("userId", userId);
+        model.addAttribute("usersSubscriptionId", usersSubscriptionId);
+        model.addAttribute("usersSubscription", usersSubscription);
         return "payment";
     }
 

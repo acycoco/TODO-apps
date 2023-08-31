@@ -30,7 +30,7 @@ public class PaymentResponseDto {
         dto.setPayMethod(entity.getPayMethod());
         dto.setPaymentDate(entity.getPaymentDate());
         dto.setUserId(entity.getUser().getId());
-        dto.setUserSubscriptionId(entity.getUserSubscription().getId());
+        dto.setUserSubscriptionId(entity.getUsersSubscription().getId());
         return dto;
     }
 }
