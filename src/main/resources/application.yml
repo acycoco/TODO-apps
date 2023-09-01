@@ -13,6 +13,18 @@ spring:
     url: jdbc:sqlite:db.sqlite
     driver-class-name: org.sqlite.JDBC
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dbsquddlfz
+    password: # 비밀번호 입력해야 됨
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     #    defer-datasource-initialization: true
     hibernate:
