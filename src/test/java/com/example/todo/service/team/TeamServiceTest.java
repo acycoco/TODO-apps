@@ -8,7 +8,6 @@ import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
-import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -25,7 +30,6 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-//@Transactional
 @SpringBootTest
 class TeamServiceTest {
 
@@ -43,10 +47,13 @@ class TeamServiceTest {
 
     User testUser;
 
-    @BeforeEach
-    void setUp() {
-        testUser = createUser();
-    }
+//    @BeforeEach
+//    void setUp() {
+//        testUser = createUser();
+//        for (int i = 0; i < 1000; i++) {
+//            createUser();
+//        }
+//    }
 
     @DisplayName("새로 만들어진 팀에 회원 한 명이 가입하는 테스트")
     @Test
@@ -78,18 +85,14 @@ class TeamServiceTest {
                 .joinCode("참여코드")
                 .build();
 
-        int threadCount = 4;
+        int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         // when
-//        for (int i = 0; i < threadCount; i++) {
-//            User user1 = createUser();
-//            teamService.joinTeam(user1.getId(), joinDto, 1L);
-//        }
-//        System.out.println("user1.getId() = " + user1.getId());
         for (int i = 0; i < threadCount; i++) {
             User user1 = createUser();
+//            long id = i + 3;
             executorService.submit(() -> {
                 try {
                     teamService.joinTeam(user1.getId(), joinDto, 1L);
@@ -105,11 +108,11 @@ class TeamServiceTest {
         latch.await();
 
         List<TeamEntity> all = teamReposiotry.findAll();
+        List<MemberEntity> all1 = memberRepository.findAll();
+        System.out.println("all1.size() = " + all1.size());
 
         // then
         assertThat(all.get(0).getParticipantNum()).isEqualTo(5);
-
-
     }
 
     private User createUser() {
