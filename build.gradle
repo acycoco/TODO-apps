@@ -67,6 +67,8 @@ dependencies {
 	//iamport(portone) 설정
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 
+	// MailSender
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	compileOnly 'org.projectlombok:lombok'
 //	runtimeOnly 'com.mysql:mysql-connector-j'
