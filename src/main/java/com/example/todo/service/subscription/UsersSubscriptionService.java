@@ -46,6 +46,9 @@ public class UsersSubscriptionService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
+        if (usersSubscriptionRepository.existsByUsersAndSubscriptionStatus(user, SubscriptionStatus.ACTIVE))
+            throw new TodoAppException(ErrorCode.ALREADY_ACTIVE_USERS_SUBSCRIPTION);
+
         SubscriptionEntity subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_SUBSCRIPTION));
 

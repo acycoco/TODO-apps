@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UsersSubscriptionRepository extends JpaRepository<UsersSubscriptionEntity, Long> {
     List<UsersSubscriptionEntity> findAllByUsers(User user);
     Optional<UsersSubscriptionEntity> findByUsersAndSubscriptionStatus(User user, SubscriptionStatus status);
+    Boolean existsByUsersAndSubscriptionStatus(User user, SubscriptionStatus status);
     Optional<UsersSubscriptionEntity> findByMerchantUid(String merchantUid);
     List<UsersSubscriptionEntity> findAllByEndDateBeforeAndSubscriptionStatus(LocalDate localDate, SubscriptionStatus status);
 }
