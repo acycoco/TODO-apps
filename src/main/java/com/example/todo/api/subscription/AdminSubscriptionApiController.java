@@ -63,12 +63,5 @@ public class AdminSubscriptionApiController {
         return ResponseEntity.ok(subscriptionService.updateSubscriptionStatus(subscriptionId));
     }
 
-    @DeleteMapping("/{subscriptionId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDto> delete(
-            @PathVariable("subscriptionId") Long subscriptionId
-    ){
-        subscriptionService.deleteSubscription(subscriptionId);
-        return ResponseEntity.ok(new ResponseDto("구독권이 삭제되었습니다."));
-    }
+
 }

@@ -18,6 +18,7 @@ public enum ErrorCode {
     NOT_MATCH_IAMPORT_CANCEL_AMOUNT(BAD_REQUEST, "환불 요청 금액과 서버의 결제금액이 다릅니다."),
     ALREADY_CANCELED(BAD_REQUEST, "이미 환불된 결제입니다."),
     EXCEED_ALLOWED_TEAM_MEMBERS(BAD_REQUEST, "허용된 최대인원을 초과했습니다."),
+    ALREADY_ACTIVE_USERS_SUBSCRIPTION(BAD_REQUEST, "이미 구독중인 구독권이 있습니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다."),
 
