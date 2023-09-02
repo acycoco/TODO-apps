@@ -6,14 +6,13 @@ import com.example.todo.service.subscription.UsersSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users/{userId}/subscription")
-public class TeamSubscriptionController {
+public class UsersSubscriptionController {
     private final UsersSubscriptionService usersSubscriptionService;
 
     @PostMapping("/{subscriptionId}")
