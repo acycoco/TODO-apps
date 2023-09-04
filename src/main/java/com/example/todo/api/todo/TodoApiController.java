@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/todo")
 public class TodoApiController {
-
     private final TodoApiService service;
 
     @PostMapping
@@ -59,13 +58,16 @@ public class TodoApiController {
     }
     //Todo 좋아요 추가, 취소 기능
     @PostMapping("/{todoId}/like")
-    public ResponseEntity<ResponseDto> toggleLikeTodo(@PathVariable Long todoId) {
-        try {
-            ResponseDto responseDto = service.toggleLikeTodoById(todoId);
-            return ResponseEntity.ok(responseDto);
-        } catch (TodoAppException e) {
-            throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
-        }
+    public ResponseDto likeTodo(Authentication authentication,
+                                @PathVariable("todoId") Long todoId) {
+        Long userId = Long.parseLong(authentication.getName());
+        boolean like = service.likeTodo(userId, todoId);
+
+        ResponseDto responseDto = new ResponseDto();
+        if (like) responseDto.setMessage("해당 TODO를 좋아합니다.");
+        else responseDto.setMessage("해당 TODO 좋아요를 취소합니다.");
+
+        return responseDto;
     }
 }
 
