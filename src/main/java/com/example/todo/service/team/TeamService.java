@@ -90,7 +90,6 @@ public class TeamService {
         team.setParticipantNum(team.getParticipantNum()+1);
         teamReposiotry.save(team);
 
-
     }
 
     public void updateTeamDetails(Long userId, TeamUpdateDto teamUpdateDto, Long teamId) {

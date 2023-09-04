@@ -1,7 +1,8 @@
 package com.example.todo.service.todo;
 
-import com.example.todo.domain.entity.TeamEntity;
+import com.example.todo.domain.entity.LikeEntity;
 import com.example.todo.domain.entity.user.User;
+import com.example.todo.domain.repository.LikeRepository;
 import com.example.todo.domain.repository.TodoApiRepository;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.ResponseDto;
@@ -26,6 +27,8 @@ import java.util.Optional;
 public class TodoApiService {
     private final TodoApiRepository todoApiRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
+
     //해당 to do가  존재하는지 확인하는 메소드
     public TodoApiEntity getTodoById(Long id) {
         Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(id);
@@ -33,6 +36,7 @@ public class TodoApiService {
             throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
         return optionalTodoApiEntity.get();
     }
+
     //해당 유저가 존재하는지 확인
     public User getUserById(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -40,7 +44,8 @@ public class TodoApiService {
             throw new TodoAppException(ErrorCode.NOT_FOUND_USER);
         return optionalUser.get();
     }
-@Transactional
+
+    @Transactional
     //to do 등록
     public ResponseDto createTodo(Long userId, TodoApiDto todoApiDto) {
         TodoApiEntity todoApiEntity = new TodoApiEntity();
@@ -124,7 +129,7 @@ public class TodoApiService {
     public ResponseDto deleteTodo(Long userId, Long todoId) {
         TodoApiEntity todoApiEntity = getTodoById(todoId);
 
-    // To do 작성자인지 확인
+        // To do 작성자인지 확인
         if (!todoApiEntity.getUser().getId().equals(userId)) {
             throw new TodoAppException(ErrorCode.NOT_MATCH_USERID);
         }
@@ -133,27 +138,21 @@ public class TodoApiService {
         return new ResponseDto("Todo가 삭제되었습니다.");
     }
 
-    //좋아요 토글 기능
-    public ResponseDto toggleLikeTodoById(Long todoId) {
-        //Todo가 존재하는지 확인
-        Optional<TodoApiEntity> optionalTodoApiEntity = todoApiRepository.findById(todoId);
+    public boolean likeTodo(Long userId, Long todoId) {
+        Optional<LikeEntity> optionalLikeEntity = likeRepository.findByUserIdAndTodoId(userId, todoId);
+        boolean result;
 
-        if (optionalTodoApiEntity.isPresent()) {
-            TodoApiEntity todoApiEntity = optionalTodoApiEntity.get();
-            // 좋아요를 한 번도 누르지 않은 경우
-            if (todoApiEntity.getLikes() == 0) {
-                //좋아요 추가
-                todoApiEntity.addLike();
-                todoApiRepository.save(todoApiEntity);
-                return new ResponseDto("좋아요를 눌렀습니다.");
-            } else {
-                // 이미 좋아요를 누른 경우, 좋아요 취소
-                todoApiEntity.removeLike();
-                todoApiRepository.save(todoApiEntity);
-                return new ResponseDto("좋아요를 취소했습니다.");
-            }
+        if (optionalLikeEntity.isPresent()) {
+            likeRepository.delete(optionalLikeEntity.get());
+            result = false;
+        } else {
+            LikeEntity likeEntity = new LikeEntity();
+            likeEntity.setUserId(userId);
+            likeEntity.setTodoId(todoId);
+            likeRepository.save(likeEntity);
+            result = true;
         }
-        throw new TodoAppException(ErrorCode.NOT_FOUND_TODO);
+        return result;
     }
 }
 
