@@ -35,6 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+/db.sqlite
 
 ### Querydsl
 /src/main/generated

@@ -1,6 +1,7 @@
 package com.example.todo.domain.entity;
 
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
+import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,10 +12,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "team_subscription")
+@Table(name = "users_subscription")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TeamSubscriptionEntity {
+public class UsersSubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +26,13 @@ public class TeamSubscriptionEntity {
     private String merchantUid;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private TeamEntity team;
+    private User users;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private SubscriptionEntity subscription;
 
-    @OneToOne(mappedBy = "teamSubscription")
-    private TeamActiveSubscriptionEntity teamActiveSubscription;
 
-    @OneToOne(mappedBy = "teamSubscription")
+    @OneToOne(mappedBy = "usersSubscription")
     private PaymentEntity payment;
 
 
@@ -41,22 +40,17 @@ public class TeamSubscriptionEntity {
         this.subscriptionStatus = subscriptionStatus;
     }
 
-    public void unlinkTeamActiveSubscription(){
-        if (teamActiveSubscription != null){
-            teamActiveSubscription = null;
-        }
-    }
+
     @Builder
-    public TeamSubscriptionEntity(Long id, LocalDate startDate, LocalDate endDate, SubscriptionStatus subscriptionStatus, BigDecimal subscriptionPrice, String merchantUid, TeamEntity team, SubscriptionEntity subscription, TeamActiveSubscriptionEntity teamActiveSubscription, PaymentEntity payment) {
+    public UsersSubscriptionEntity(Long id, LocalDate startDate, LocalDate endDate, SubscriptionStatus subscriptionStatus, BigDecimal subscriptionPrice, String merchantUid, User users, SubscriptionEntity subscription, PaymentEntity payment) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.subscriptionStatus = subscriptionStatus;
         this.subscriptionPrice = subscriptionPrice;
         this.merchantUid = merchantUid;
-        this.team = team;
+        this.users = users;
         this.subscription = subscription;
-        this.teamActiveSubscription = teamActiveSubscription;
         this.payment = payment;
     }
 }
