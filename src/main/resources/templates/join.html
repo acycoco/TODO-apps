@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Join Team</title>
+</head>
+<body>
+<h1>Join Team</h1>
+
+<!-- 팀 정보 표시 -->
+<div>
+    <h2>Team Details</h2>
+    <p>Team Name: <span th:text="${teamOverviewDto.teamName}"></span></p>
+    <p>Team Manager: <span th:text="${teamOverviewDto.teamManagerName}"></span></p>
+    <p>Description: <span th:text="${teamOverviewDto.teamDesc}"></span></p>
+</div>
+
+<!-- 가입 코드 입력 양식 -->
+<form action="/join-team" method="POST">
+    <label for="joinCode">Join Code:</label>
+    <input type="text" id="joinCode" name="joinCode" required>
+    <input type="hidden" id="teamId" name="teamId" th:value="${teamId}">
+    <button type="submit">Join</button>
+</form>
+</body>
+</html>
