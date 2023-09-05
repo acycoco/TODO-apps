@@ -21,8 +21,8 @@ public class TeamController {
     private final TeamService teamService;
 
     @GetMapping
-    public String getTeamGeneratePage(Authentication authentication) {
-        return "team-generate.html";
+    public String getTeamCreatePage(Authentication authentication) {
+        return "team-create.html";
     }
 
     @GetMapping("/search-page")

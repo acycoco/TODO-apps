@@ -46,7 +46,6 @@ public class TeamService {
                     .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_ACTIVE_SUBSCRIPTION));
             if ( teamCreateDto.getParticipantNum() > usersSubscription.getSubscription().getMaxMember())
                 throw new TodoAppException(ErrorCode.EXCEED_ALLOWED_TEAM_MEMBERS);
-
         }
 
         TeamEntity teamEntity = new TeamEntity();
@@ -66,7 +65,6 @@ public class TeamService {
         teamEntity.setParticipantNum(teamEntity.getMember().size());
         teamEntity = teamReposiotry.save(teamEntity);
         memberRepository.save(member);
-
     }
 
     @Transactional
