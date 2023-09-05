@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team and Task Details</title>
+</head>
+<body>
+<h1>Team Details</h1>
+<div>
+    <!-- Team Details -->
+    <h2>Team Information</h2>
+    <p>Name: <!-- Insert Team Name from TeamDetailsDto --></p>
+    <p>Manager: <!-- Insert Manager Name from TeamDetailsDto --></p>
+    <p>Description: <!-- Insert Description from TeamDetailsDto --></p>
+    <p>Member Limit: <!-- Insert Member Limit from TeamDetailsDto --></p>
+
+    <h2>Team Members</h2>
+    <ul>
+        <!-- Loop through members in TeamDetailsDto and display each member -->
+        <!-- Example:
+        <li>Member Name 1</li>
+        <li>Member Name 2</li>
+        -->
+    </ul>
+</div>
+
+<h1>Task List</h1>
+<div>
+    <!-- Display Task List -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Task Name</th>
+            <th>Task Description</th>
+            <th>Start Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop through TaskApiDto list -->
+        <!-- Example:
+        <tr>
+            <td>1</td>
+            <td>Task 1</td>
+            <td>Task Description 1</td>
+            <td>2023-09-05</td>
+            <td>2023-09-10</td>
+            <td>TODO</td>
+        </tr>
+        -->
+        </tbody>
+    </table>
+</div>
+
+<h1>Done Tasks</h1>
+<div>
+    <!-- Display only TaskApiDto items with status "DONE" -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Task Name</th>
+            <th>Task Description</th>
+            <th>Start Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop through TaskApiDto list and filter tasks with status "DONE" -->
+        <!-- Example:
+        <tr>
+            <td>2</td>
+            <td>Task 2</td>
+            <td>Task Description 2</td>
+            <td>2023-09-06</td>
+            <td>2023-09-12</td>
+            <td>DONE</td>
+        </tr>
+        -->
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
