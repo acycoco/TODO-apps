@@ -3,11 +3,13 @@ package com.example.todo.api.team;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.dto.team.TeamOverviewDto;
 import com.example.todo.dto.team.TeamUpdateDto;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,16 @@ public class TeamController {
 
     @GetMapping("/search-page")
     public String getTeamSearchPage() {
-        return "team-generate.html";
+        return "team-search.html";
     }
+
+    @GetMapping("/search?keyword=")
+    public Page<TeamOverviewDto> searchTeam(@RequestParam("keyword") String keyword,
+                                            @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                            @RequestParam(value = "limit", defaultValue = "30") Integer limit) {
+        return teamService.searchTeam(keyword, page, limit);
+    }
+
 
     @PostMapping
     public ResponseDto createTeam(Authentication authentication,

@@ -11,18 +11,22 @@ import com.example.todo.domain.repository.UsersSubscriptionRepository;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.dto.team.TeamOverviewDto;
 import com.example.todo.dto.team.TeamUpdateDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Slf4j // 나중에 지우기
 @Service
@@ -135,5 +139,14 @@ public class TeamService {
         team.setParticipantNum(team.getParticipantNum()-1);
         teamReposiotry.save(team);
         memberRepository.delete(member);
+    }
+
+
+    public Page<TeamOverviewDto> searchTeam(String keyword, Integer page, Integer limit) {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+        Page<TeamEntity> teamEntityPage = teamReposiotry.findTeamEntitiesByNameAndAndDeletedAtEmpty(keyword, pageable);
+
+        Page<TeamOverviewDto> teamOverviewDtoPage = teamEntityPage.map(TeamOverviewDto::fromEntity);
+        return teamOverviewDtoPage;
     }
 }
