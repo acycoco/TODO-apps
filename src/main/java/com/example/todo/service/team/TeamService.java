@@ -9,9 +9,11 @@ import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.UsersSubscriptionRepository;
 import com.example.todo.domain.repository.user.UserRepository;
+import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.dto.team.*;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
+import com.example.todo.service.task.TaskApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j // 나중에 지우기
 @Service
@@ -32,6 +35,7 @@ public class TeamService {
     private final TeamReposiotry teamReposiotry;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
+    private final TaskApiService taskApiService;
     private final UsersSubscriptionRepository usersSubscriptionRepository;
     @Transactional
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
@@ -60,7 +64,7 @@ public class TeamService {
         teamEntity.setMembers(new ArrayList<>());
         teamEntity.getMembers().add(member);
         teamEntity.setParticipantNum(teamEntity.getMembers().size());
-        teamEntity = teamReposiotry.save(teamEntity);
+        teamReposiotry.save(teamEntity);
         memberRepository.save(member);
     }
 
@@ -150,6 +154,15 @@ public class TeamService {
         TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
         MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
-        return TeamDetailsDto.fromEntity(team);
+        TeamDetailsDto teamDetailsDto = TeamDetailsDto.fromEntity(team);
+
+        List<TaskApiDto> allTasksDtoList = taskApiService.readTasksAll(teamId);
+        for (TaskApiDto taskApiDto : allTasksDtoList) {
+            teamDetailsDto.getAllTasks().add(taskApiDto);
+            if (taskApiDto.getStatus().equals("DONE")) teamDetailsDto.getDoneTasks().add(taskApiDto);
+            else teamDetailsDto.getNotDoneTasks().add(taskApiDto);
+        }
+
+        return teamDetailsDto;
     }
 }

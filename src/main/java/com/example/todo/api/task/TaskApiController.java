@@ -37,7 +37,7 @@ public class TaskApiController {
 
     @GetMapping
     public List<TaskApiDto> readAll(
-            Authentication authentication,
+//            Authentication authentication,
             @PathVariable("teamId") Long teamId) {
         return service.readTasksAll(teamId);
     }
