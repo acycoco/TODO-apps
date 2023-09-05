@@ -9,10 +9,7 @@ import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.UsersSubscriptionRepository;
 import com.example.todo.domain.repository.user.UserRepository;
-import com.example.todo.dto.team.TeamCreateDto;
-import com.example.todo.dto.team.TeamJoinDto;
-import com.example.todo.dto.team.TeamOverviewDto;
-import com.example.todo.dto.team.TeamUpdateDto;
+import com.example.todo.dto.team.*;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +57,9 @@ public class TeamService {
         member.setTeam(teamEntity);
         member.setUser(manager);
 
-        teamEntity.setMember(new ArrayList<>());
-        teamEntity.getMember().add(member);
-        teamEntity.setParticipantNum(teamEntity.getMember().size());
+        teamEntity.setMembers(new ArrayList<>());
+        teamEntity.getMembers().add(member);
+        teamEntity.setParticipantNum(teamEntity.getMembers().size());
         teamEntity = teamReposiotry.save(teamEntity);
         memberRepository.save(member);
     }
@@ -88,7 +85,7 @@ public class TeamService {
         member.setUser(user);
         memberRepository.save(member);
 
-        team.getMember().add(member);
+        team.getMembers().add(member);
         team.setParticipantNum(team.getParticipantNum()+1);
         teamReposiotry.save(team);
 
@@ -133,7 +130,7 @@ public class TeamService {
         TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
         MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
-        team.getMember().remove(member);
+        team.getMembers().remove(member);
         team.setParticipantNum(team.getParticipantNum()-1);
         teamReposiotry.save(team);
         memberRepository.delete(member);
@@ -146,5 +143,13 @@ public class TeamService {
 
         Page<TeamOverviewDto> teamOverviewDtoPage = teamEntityPage.map(TeamOverviewDto::fromEntity);
         return teamOverviewDtoPage;
+    }
+
+    public TeamDetailsDto getTeamDetails(Long userId, Long teamId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+        MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
+
+        return TeamDetailsDto.fromEntity(team);
     }
 }

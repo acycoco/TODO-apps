@@ -1,10 +1,7 @@
 package com.example.todo.api.team;
 
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.team.TeamCreateDto;
-import com.example.todo.dto.team.TeamJoinDto;
-import com.example.todo.dto.team.TeamOverviewDto;
-import com.example.todo.dto.team.TeamUpdateDto;
+import com.example.todo.dto.team.*;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,12 @@ public class TeamController {
         return teamService.searchTeam(keyword, page, limit);
     }
 
+    @GetMapping("/{teamId}")
+    public TeamDetailsDto getTeamDetails(Authentication authentication,
+                                         @PathVariable("teamId") Long teamId) {
+        Long userId = Long.parseLong(authentication.getName());
+        return teamService.getTeamDetails(userId, teamId);
+    }
 
     @PostMapping
     public ResponseDto createTeam(Authentication authentication,
@@ -50,9 +53,7 @@ public class TeamController {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("새로운 팀 등록이 완료되었습니다.");
         return responseDto;
-
     }
-
 
     @PostMapping("/{teamId}/member")
     public ResponseDto joinTeam(Authentication authentication,
