@@ -139,19 +139,24 @@ public class TodoApiService {
     }
 
     public boolean likeTodo(Long userId, Long todoId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        TodoApiEntity todoApiEntity = todoApiRepository.findById(todoId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TODO));
         Optional<LikeEntity> optionalLikeEntity = likeRepository.findByUserIdAndTodoId(userId, todoId);
         boolean result;
 
         if (optionalLikeEntity.isPresent()) {
             likeRepository.delete(optionalLikeEntity.get());
+            todoApiEntity.setLikes(todoApiEntity.getLikes() - 1);
             result = false;
         } else {
             LikeEntity likeEntity = new LikeEntity();
             likeEntity.setUserId(userId);
             likeEntity.setTodoId(todoId);
             likeRepository.save(likeEntity);
+            todoApiEntity.setLikes(todoApiEntity.getLikes() + 1);
             result = true;
         }
+        todoApiRepository.save(todoApiEntity);
         return result;
     }
 }

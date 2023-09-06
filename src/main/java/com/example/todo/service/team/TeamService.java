@@ -37,15 +37,15 @@ public class TeamService {
     private final MemberRepository memberRepository;
     private final TaskApiService taskApiService;
     private final UsersSubscriptionRepository usersSubscriptionRepository;
+
     @Transactional
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
-
         User manager = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
         if (teamCreateDto.getParticipantNum() > 5) {
             UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findByUsersAndSubscriptionStatus(manager, SubscriptionStatus.ACTIVE)
                     .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_ACTIVE_SUBSCRIPTION));
-            if ( teamCreateDto.getParticipantNum() > usersSubscription.getSubscription().getMaxMember())
+            if (teamCreateDto.getParticipantNum() > usersSubscription.getSubscription().getMaxMember())
                 throw new TodoAppException(ErrorCode.EXCEED_ALLOWED_TEAM_MEMBERS);
         }
 
@@ -74,15 +74,16 @@ public class TeamService {
 
         TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
-        if (!team.getJoinCode().equals(teamJoinDto.getJoinCode())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
-
+        if (!team.getJoinCode().equals(teamJoinDto.getJoinCode()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
 
         //팀 멤버수 제한
-        if (team.getParticipantNum().equals(team.getParticipantNumMax())){
+        if (team.getParticipantNum().equals(team.getParticipantNumMax()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "팀의 최대 허용 멤버 수를 초과했습니다.");
-        }
 
-        if (memberRepository.findByTeamAndUser(team, user).isPresent()) throw new TodoAppException(ErrorCode.ALREADY_USER_JOINED);
+
+        if (memberRepository.findByTeamAndUser(team, user).isPresent())
+            throw new TodoAppException(ErrorCode.ALREADY_USER_JOINED);
 
         MemberEntity member = new MemberEntity();
         member.setTeam(team);
@@ -90,7 +91,7 @@ public class TeamService {
         memberRepository.save(member);
 
         team.getMembers().add(member);
-        team.setParticipantNum(team.getParticipantNum()+1);
+        team.setParticipantNum(team.getParticipantNum() + 1);
         teamReposiotry.save(team);
 
     }
@@ -102,21 +103,23 @@ public class TeamService {
         if (team.getManagerId() != user.getId()) throw new TodoAppException(ErrorCode.MISMATCH_MANAGERID_USERID);
 
 
-        if (teamUpdateDto.getName() != null) {
+        if (!teamUpdateDto.getName().equals(""))
             team.setName(teamUpdateDto.getName());
-        }
 
-        if (teamUpdateDto.getDescription() != null) {
+
+        if (!teamUpdateDto.getDescription().equals(""))
             team.setDescription(teamUpdateDto.getDescription());
-        }
 
-        if (teamUpdateDto.getJoinCode() != null) {
+
+        if (!teamUpdateDto.getJoinCode().equals(""))
             team.setJoinCode(teamUpdateDto.getJoinCode());
+
+
+        if (!teamUpdateDto.getManager().getUsername().equals("")) {
+            MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
+            team.setManager(member.getUser());
         }
 
-        if (teamUpdateDto.getManager() != null) {
-            team.setManager(teamUpdateDto.getManager());
-        }
         teamReposiotry.save(team);
     }
 
@@ -128,6 +131,7 @@ public class TeamService {
 
         teamReposiotry.delete(team);
     }
+
     @Transactional
     public void leaveTeam(Long userId, Long teamId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
@@ -135,7 +139,7 @@ public class TeamService {
         MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
         team.getMembers().remove(member);
-        team.setParticipantNum(team.getParticipantNum()-1);
+        team.setParticipantNum(team.getParticipantNum() - 1);
         teamReposiotry.save(team);
         memberRepository.delete(member);
     }
