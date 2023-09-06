@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,13 +25,17 @@ public class TeamEntity extends BaseTimeEntity {
     private User manager;
 
     @OneToMany
-    private List<MemberEntity> member;
+    private List<MemberEntity> members;
 
-    @Version
-    private Long version;
+
    
     public Long getManagerId() {
         return manager.getId();
     }
+    public List<String> getMemebersNamesList(List<MemberEntity> members) {
+        List<String> membersNamesList = new ArrayList<>();
+        for (MemberEntity member : members) membersNamesList.add(member.getUser().getUsername());
 
+        return membersNamesList;
+    }
 }

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/team/{teamId}/tasks")
@@ -34,11 +36,10 @@ public class TaskApiController {
     }
 
     @GetMapping
-    public Page<TaskApiDto> readAll(
-            @PathVariable("teamId") Long teamId,
-            @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
-        return service.readTasksAll(teamId, page, limit);
+    public List<TaskApiDto> readAll(
+//            Authentication authentication,
+            @PathVariable("teamId") Long teamId) {
+        return service.readTasksAll(teamId);
     }
 
     //수정

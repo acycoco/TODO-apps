@@ -31,10 +31,10 @@ public class PaymentEntity {
 
     private LocalDateTime paymentDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private UsersSubscriptionEntity usersSubscription;
 
 

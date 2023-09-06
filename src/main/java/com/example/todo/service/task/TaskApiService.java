@@ -12,15 +12,11 @@ import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.time.LocalDate;
 
@@ -91,15 +87,14 @@ public class TaskApiService {
         else throw new TodoAppException(ErrorCode.NOT_FOUND_TASK);
     }
 
-    public Page<TaskApiDto> readTasksAll(Long teamId, Integer page, Integer limit) {
+    public List<TaskApiDto> readTasksAll(Long teamId) {
         //조직이 존재하는지 확인
         getTeamById(teamId);
-        Pageable pageable = PageRequest.of(page, limit);
-        Page<TaskApiEntity> taskApiEntities = taskApiRepository.findAll(pageable);
-        Page<TaskApiDto> taskApiDtos = taskApiEntities.map(TaskApiDto::fromEntity);
-        return taskApiDtos;
+        List<TaskApiEntity> taskApiEntities = taskApiRepository.findAllByTeamId(teamId);
+        List<TaskApiDto> taskApiDtoList = new ArrayList<>();
+        for (TaskApiEntity taskApiEntity : taskApiEntities) taskApiDtoList.add(TaskApiDto.fromEntity(taskApiEntity));
+        return taskApiDtoList;
     }
-
 
     //업무 수정
     public ResponseDto updateTask(Long userId, Long teamId, Long taskId, TaskApiDto taskApiDto) {
