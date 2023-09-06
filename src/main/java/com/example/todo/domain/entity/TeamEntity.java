@@ -26,7 +26,8 @@ public class TeamEntity extends BaseTimeEntity {
     @OneToMany
     private List<MemberEntity> member;
 
-
+    @Version
+    private Long version;
    
     public Long getManagerId() {
         return manager.getId();

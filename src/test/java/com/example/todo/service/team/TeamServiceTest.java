@@ -37,6 +37,9 @@ class TeamServiceTest {
     TeamService teamService;
 
     @Autowired
+    OptimisticLockTeamFacade optimisticLockTeamFacade;
+
+    @Autowired
     MemberRepository memberRepository;
 
     @Autowired
@@ -95,7 +98,7 @@ class TeamServiceTest {
 //            long id = i + 3;
             executorService.submit(() -> {
                 try {
-                    teamService.joinTeam(user1.getId(), joinDto, 1L);
+                    optimisticLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("e = " + e);
@@ -112,6 +115,7 @@ class TeamServiceTest {
         System.out.println("all1.size() = " + all1.size());
 
         // then
+        assertThat(all1.size()).isEqualTo(5);
         assertThat(all.get(0).getParticipantNum()).isEqualTo(5);
     }
 

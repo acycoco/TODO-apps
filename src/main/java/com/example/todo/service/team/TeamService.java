@@ -14,8 +14,11 @@ import com.example.todo.dto.team.TeamJoinDto;
 import com.example.todo.dto.team.TeamUpdateDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +71,9 @@ public class TeamService {
     @Transactional
     public void joinTeam(Long userId, TeamJoinDto teamJoinDto, Long teamId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+//        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
-        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+        TeamEntity team = teamReposiotry.findByIdWithOptimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
 
@@ -89,7 +93,6 @@ public class TeamService {
         team.getMember().add(member);
         team.setParticipantNum(team.getParticipantNum()+1);
         teamReposiotry.save(team);
-
 
     }
 
