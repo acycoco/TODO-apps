@@ -11,8 +11,6 @@ public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
     private Long userId;
-    @OneToMany
     private Long todoId;
 }
