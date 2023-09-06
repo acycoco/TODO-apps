@@ -78,6 +78,8 @@ class TeamServiceTest {
     @DisplayName("제한된 팀 숫자에 여러명이 동시에 가입하는 테스트")
     @Test
     void joinTeamWithRaceCondition() throws InterruptedException {
+        // 현재, 100번 동시에 요청이 된다고 가정하면 Member 엔티티 size 값이 5를 넘는 현상이 발생한다.
+        // 그리고 100번이 아니고 한 30번? 정도만 하면 Team 엔티티 participantNum 컬럼 값이 5가 아니다.
         // given
         User user = createUser();
         createTeam(user.getId());
@@ -108,11 +110,12 @@ class TeamServiceTest {
         latch.await();
 
         List<TeamEntity> all = teamReposiotry.findAll();
-        List<MemberEntity> all1 = memberRepository.findAll();
-        System.out.println("all1.size() = " + all1.size());
+        List<MemberEntity> members = memberRepository.findAll();
+        System.out.println("members.size() = " + members.size());
 
         // then
-        assertThat(all.get(0).getParticipantNum()).isEqualTo(5);
+        assertThat(all.get(0).getParticipantNum()).isEqualTo(100);
+        assertThat(members.size()).isEqualTo(100);
     }
 
     private User createUser() {
@@ -126,7 +129,7 @@ class TeamServiceTest {
         TeamCreateDto createDto = TeamCreateDto.builder()
                 .name("구매팀")
                 .joinCode("참여코드")
-                .participantNum(5)
+                .participantNum(100)
                 .description("구매팀입니다.")
                 .build();
         teamService.createTeam(userId, createDto);
