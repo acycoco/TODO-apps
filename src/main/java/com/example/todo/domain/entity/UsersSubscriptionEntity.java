@@ -21,18 +21,20 @@ public class UsersSubscriptionEntity {
     private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
     private SubscriptionStatus subscriptionStatus;
     private BigDecimal subscriptionPrice;
     private String merchantUid;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User users;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SubscriptionEntity subscription;
 
 
-    @OneToOne(mappedBy = "usersSubscription")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "usersSubscription")
     private PaymentEntity payment;
 
 
@@ -51,6 +53,6 @@ public class UsersSubscriptionEntity {
         this.merchantUid = merchantUid;
         this.users = users;
         this.subscription = subscription;
-        this.payment = payment;
+//        this.payment = payment;
     }
 }
