@@ -42,12 +42,12 @@ public class TeamService {
     public void createTeam(Long userId, TeamCreateDto teamCreateDto) {
         User manager = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
-        if (teamCreateDto.getParticipantNum() > 5) {
-            UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findByUsersAndSubscriptionStatus(manager, SubscriptionStatus.ACTIVE)
-                    .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_ACTIVE_SUBSCRIPTION));
-            if (teamCreateDto.getParticipantNum() > usersSubscription.getSubscription().getMaxMember())
-                throw new TodoAppException(ErrorCode.EXCEED_ALLOWED_TEAM_MEMBERS);
-        }
+//        if (teamCreateDto.getParticipantNum() > 5) {
+//            UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findByUsersAndSubscriptionStatus(manager, SubscriptionStatus.ACTIVE)
+//                    .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_ACTIVE_SUBSCRIPTION));
+//            if (teamCreateDto.getParticipantNum() > usersSubscription.getSubscription().getMaxMember())
+//                throw new TodoAppException(ErrorCode.EXCEED_ALLOWED_TEAM_MEMBERS);
+//        }
 
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName(teamCreateDto.getName());
@@ -73,6 +73,7 @@ public class TeamService {
         User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
         TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+//        TeamEntity team = teamReposiotry.findByIdWithPessimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
