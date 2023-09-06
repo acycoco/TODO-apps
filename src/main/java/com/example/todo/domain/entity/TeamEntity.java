@@ -21,6 +21,9 @@ public class TeamEntity extends BaseTimeEntity {
     private Integer participantNum;
     private Integer participantNumMax;
 
+    @Version
+    private Long version;
+
     @ManyToOne
     private User manager;
 

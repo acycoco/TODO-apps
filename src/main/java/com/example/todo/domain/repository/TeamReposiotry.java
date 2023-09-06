@@ -21,4 +21,10 @@ public interface TeamReposiotry extends JpaRepository<TeamEntity, Long> {
             "from TeamEntity t " +
             "where t.id =:teamId")
     Optional<TeamEntity> findByIdWithPessimisticLock(@Param("teamId") Long teamId);
+
+    @Lock(value = LockModeType.OPTIMISTIC)
+    @Query("select t " +
+            "from TeamEntity t " +
+            "where t.id =:teamId")
+    Optional<TeamEntity> findByIdWithOptimisticLock(@Param("teamId") Long teamId);
 }
