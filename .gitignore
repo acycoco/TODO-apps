@@ -40,5 +40,6 @@ out/
 ### Querydsl
 /src/main/generated
 
-### yml
+### yml oauth
 application.yml
+application-oauth.yml
