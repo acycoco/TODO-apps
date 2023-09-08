@@ -16,7 +16,7 @@ public class TaskCommentEntity extends BaseTimeEntity {
     @ManyToOne
     private User writer;
     private String content;
-
+    private String reply;
     @ManyToOne
     private TaskApiEntity taskApiEntity;
 }
