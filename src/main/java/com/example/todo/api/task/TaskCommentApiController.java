@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api/team/{teamId}/task/{taskId}/comments")
 @RequiredArgsConstructor
 public class TaskCommentApiController {
