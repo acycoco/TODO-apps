@@ -1,6 +1,9 @@
 package com.example.todo.api.notification;
 
 import com.example.todo.dto.NotificationDto;
+import com.example.todo.service.notification.NotificationService;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -10,7 +13,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("api/notifications")
 public class NotificationController {
+    private final NotificationService notificationService;
     // SSE를 저장할 리스트를 생성
     private List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
@@ -18,8 +24,13 @@ public class NotificationController {
     @CrossOrigin
     //메시지를 읽을 수 있는 출력창
     @RequestMapping(value = "/subscribe", consumes = MediaType.ALL_VALUE)
-    public SseEmitter subscribe() {
-        SseEmitter sseEmitter = new SseEmitter(0L);
+    public SseEmitter subscribe(final HttpServletResponse response) {
+
+        //한글
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        SseEmitter sseEmitter = new SseEmitter(60L * 1000 * 60);
         emitters.add(sseEmitter);
 
         // SseEmitter가 완료될 때 emitters 리스트에서 제거
@@ -28,10 +39,11 @@ public class NotificationController {
         sseEmitter.onCompletion(() -> {
             emitters.remove(sseEmitter);
         });
+        updateNews(new NotificationDto());
         return sseEmitter;
     }
     //아래는 Service에서 호출한다.
-    @PostMapping(value = "/updateNews", produces = MediaType.APPLICATION_JSON_VALUE+";charset=UTF-8")
+    @PostMapping(value = "/updateNews")
     public void updateNews(@RequestBody NotificationDto notificationDto) {
         for (SseEmitter emitter : emitters) {
             try {
@@ -41,5 +53,15 @@ public class NotificationController {
                 e.printStackTrace();
             }
         }
+    }
+    //개별 구독 페이지
+    @GetMapping(value = "/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable Long id, final HttpServletResponse response) {
+        return notificationService.subscribe(id, response);
+    }
+    // 클라이언트가 데이터를 수신하기 위해 사용할 엔드포인트
+    @PostMapping("/sendData/{id}")
+    public void sendData(@PathVariable Long id) {
+        notificationService.notify(id, "data");
     }
 }
