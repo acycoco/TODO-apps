@@ -162,7 +162,7 @@ public class TeamService {
 
         TeamDetailsDto teamDetailsDto = TeamDetailsDto.fromEntity(team);
 
-        List<TaskApiDto> allTasksDtoList = taskApiService.readTasksAll(teamId);
+        List<TaskApiDto> allTasksDtoList = taskApiService.readTasksAll(userId, teamId);
         for (TaskApiDto taskApiDto : allTasksDtoList) {
             teamDetailsDto.getAllTasks().add(taskApiDto);
             if (taskApiDto.getStatus().equals("DONE")) teamDetailsDto.getDoneTasks().add(taskApiDto);

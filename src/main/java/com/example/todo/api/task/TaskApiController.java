@@ -1,6 +1,7 @@
 package com.example.todo.api.task;
 
 import com.example.todo.dto.ResponseDto;
+import com.example.todo.dto.task.TaskAndTeamDto;
 import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.service.task.TaskApiService;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,25 @@ public class TaskApiController {
     @GetMapping("/{taskId}")
     public TaskApiDto read(
             @PathVariable("teamId") Long teamId,
-            @PathVariable("taskId") Long taskId) {
-        return service.readTask(teamId, taskId);
+            @PathVariable("taskId") Long taskId,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.readTask(teamId, taskId, userId);
     }
 
     @GetMapping
     public List<TaskApiDto> readAll(
-//            Authentication authentication,
+            Authentication authentication,
             @PathVariable("teamId") Long teamId) {
-        return service.readTasksAll(teamId);
+        Long userId = Long.parseLong(authentication.getName());
+        return service.readTasksAll(userId, teamId);
+    }
+
+    //개별 업무 조회
+    @GetMapping("/myTasks")
+    public List<TaskAndTeamDto> getMyTasks(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        return service.getMyTasks(userId);
     }
 
     //수정
