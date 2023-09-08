@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notifications")
+@RequestMapping("api/notifications")
 public class NotificationController {
     private final NotificationService notificationService;
     // SSE를 저장할 리스트를 생성
