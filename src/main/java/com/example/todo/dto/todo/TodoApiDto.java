@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class TodoApiDto {
@@ -17,6 +19,7 @@ public class TodoApiDto {
     private LocalDate startDate;
     @NotNull(message = "마감일을 작성해주세요.")
     private LocalDate dueDate;
+    private List<String> fileUrls = new ArrayList<>();
     private String status;
     private int likes;
 
@@ -30,5 +33,14 @@ public class TodoApiDto {
         todoApiDto.setLikes(entity.getLikes()); // 추가: 좋아요 개수 설정
         todoApiDto.setStatus(entity.getStatus());
         return todoApiDto;
+    }
+
+    public TodoApiDto fromParams(String title, String content, LocalDate startDate, LocalDate dueDate) {
+    TodoApiDto todoApiDto = new TodoApiDto();
+    todoApiDto.setTitle(title);
+    todoApiDto.setContent(content);
+    todoApiDto.setStartDate(startDate);
+    todoApiDto.setDueDate(dueDate);
+    return todoApiDto;
     }
 }
