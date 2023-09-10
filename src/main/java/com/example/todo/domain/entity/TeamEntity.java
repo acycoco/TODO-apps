@@ -20,9 +20,9 @@ public class TeamEntity extends BaseTimeEntity {
     private String joinCode;
     private Integer participantNum;
     private Integer participantNumMax;
-
-    @Version
-    private Long version;
+//
+//    @Version
+//    private Long version;
 
     @ManyToOne
     private User manager;
