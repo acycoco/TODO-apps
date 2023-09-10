@@ -40,6 +40,12 @@ class TeamServiceTest {
     OptimisticLockTeamFacade optimisticLockTeamFacade;
 
     @Autowired
+    LettuceLockTeamFacade lettuceLockTeamFacade;
+
+    @Autowired
+    RedissonLockTeamFacade redissonLockTeamFacade;
+
+    @Autowired
     MemberRepository memberRepository;
 
     @Autowired
@@ -100,7 +106,9 @@ class TeamServiceTest {
 //            long id = i + 3;
             executorService.submit(() -> {
                 try {
-                    optimisticLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
+//                    optimisticLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
+//                    lettuceLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
+                    redissonLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("e = " + e);
