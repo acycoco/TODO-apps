@@ -1,6 +1,6 @@
 package com.example.todo.api.subscription;
 
-import com.example.todo.dto.SubscriptionResponseDto;
+import com.example.todo.dto.subscription.SubscriptionResponseDto;
 import com.example.todo.service.subscription.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

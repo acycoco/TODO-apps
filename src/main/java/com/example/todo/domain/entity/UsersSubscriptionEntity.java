@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Table(name = "users_subscription")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UsersSubscriptionEntity {
+public class UsersSubscriptionEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
