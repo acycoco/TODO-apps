@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO - 활성화 중인 구독권</title>
+</head>
+<body>
+<h1 id="title-elem">구독권 이름</h1>
+<p id="description-elem">구독권 설명</p>
+<hr>
+<div id="subscription-container">
+    <div id="user-container">
+        <h3 id="user-elem">사용자 ID: <span id="user-id-elem"></span></h3>
+    </div>
+    <h3>구독일: <span id="start-date-elem"></span>, 만료일: <span id="end-date-elem"></span> 상태: <span id="status-elem"></span></h3>
+</div>
+</body>
+<script>
+    fetch(`/api/users-subscription/active`)
+        .then(response => response.json())
+        .then(data => {
+            // 생성된 팀 구독 ID와 결제 페이지로 이동
+            console.log(data)
+            data = data.date;
+            document.getElementById("title-elem").innerText = data.subscriptionName;
+            document.getElementById("description-elem").innerText = data.subscriptionDescription;
+            document.getElementById("user-elem").innerText = data.username;
+            document.getElementById("start-date-elem").innerText = data.startDate;
+            document.getElementById("end-date-elem").innerText = data.endDate;
+            document.getElementById("status-elem").innerText = data.subscriptionStatus;
+        })
+        .catch(error => console.error('유저 활성화중인 구독권 정보 요청 오류:', error));
+
+</script>
+</html>
