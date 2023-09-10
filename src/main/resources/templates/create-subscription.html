@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todo - 구독권 등록</title>
+</head>
+<body>
+<h1>구독권 등록</h1>
+<div id="user-container"></div>
+<hr>
+<div>
+    <form id="create-item-form">
+        <p>
+            <label>제목:
+                <input id="title-input" type="text" placeholder="제목">
+            </label>
+        </p>
+        <p>
+            <label>내용:
+                <textarea id="desc-input"></textarea>
+            </label>
+        </p>
+        <p>
+            <label>최소금액:
+                <input id="min-price-input" type="number" placeholder="최소금액">
+            </label>
+        </p>
+        <p>
+            <label>이미지:
+                <input id="image-input" type="file" accept="image/*">
+            </label>
+        </p>
+        <div id="image-preview">
+            이미지가 없습니다.
+        </div>
+        <br>
+        <input type="submit" value="등록">
+    </form>
+</div>
+<hr>
+</body>
+</html>

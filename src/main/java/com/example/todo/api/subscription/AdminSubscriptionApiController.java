@@ -1,8 +1,7 @@
 package com.example.todo.api.subscription;
 
-import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.SubscriptionCreateRequestDto;
-import com.example.todo.dto.SubscriptionResponseDto;
+import com.example.todo.dto.subscription.SubscriptionCreateRequestDto;
+import com.example.todo.dto.subscription.SubscriptionResponseDto;
 import com.example.todo.service.subscription.SubscriptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
