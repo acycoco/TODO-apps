@@ -6,14 +6,13 @@ import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.*;
 import com.example.todo.domain.repository.user.UserRepository;
-import com.example.todo.dto.UsersSubscriptionResponseDto;
+import com.example.todo.dto.subscription.UsersSubscriptionResponseDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -72,8 +70,7 @@ public class UsersSubscriptionService {
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
         //findAllByUsers가 맞는지 findAllByUsersIs가 맞는지..
-        List<UsersSubscriptionEntity> usersSubscriptions = usersSubscriptionRepository.findAllByUsers(user);
-        Page<UsersSubscriptionEntity> usersSubscriptionPages = new PageImpl<>(usersSubscriptions, PageRequest.of(page, limit), usersSubscriptions.size());
+        Page<UsersSubscriptionEntity> usersSubscriptionPages = usersSubscriptionRepository.findAllByUsers(user, PageRequest.of(page - 1, limit));
         return usersSubscriptionPages.map(UsersSubscriptionResponseDto::fromEntity);
     }
 

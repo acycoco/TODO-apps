@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo - 구독 내역 보기</title>
+</head>
+<body>
+<h1>구독 내역</h1>
+<div id="user-container"></div>
+<hr>
+<div id="users-subscription-container">
+    <table>
+        <thead>
+        <tr>
+            <th>구독권</th>
+            <th>시작일</th>
+            <th>만료일</th>
+            <th>상태</th>
+            <th>상세보기</th>
+        </tr>
+        </thead>
+        <tbody id="subscription-list"></tbody>
+    </table>
+    <div id="pagination"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 페이지 로드 시 실행되는 코드
+
+        // 페이지네이션과 관련된 변수 설정
+        const itemsPerPage = 10; // 페이지당 아이템 수
+        let currentPage = 1; // 현재 페이지
+        let totalPages = 1; // 총 페이지 수
+
+        // HTML 요소 참조
+        const subscriptionList = document.getElementById("subscription-list");
+        const pagination = document.getElementById("pagination");
+
+        // 구독 내역을 가져와서 테이블에 추가하는 함수
+        function fetchAndDisplaySubscriptions(page) {
+            // 백엔드 API에 GET 요청을 보내 구독 내역을 가져옵니다.
+            console.log("page" + page)
+            console.log("itemsPerPage" + itemsPerPage)
+            fetch(`/api/users-subscription?page=${page}&limit=${itemsPerPage}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    // 구독 내역 데이터를 테이블에 추가
+                    data = data.date;
+                    displaySubscriptions(data.content);
+
+                    // 페이지네이션 업데이트
+                    totalPages = data.totalPages;
+                    updatePagination();
+                })
+                .catch((error) => {
+                    console.error("구독 내역을 가져오는 중 오류 발생:", error);
+                });
+        }
+
+        // 구독 내역을 테이블에 추가하는 함수
+        function displaySubscriptions(users_subscriptions) {
+            // 테이블 내용 초기화
+            subscriptionList.innerHTML = "";
+
+            // 각 구독 내역을 반복하며 테이블에 추가
+            users_subscriptions.forEach((users_subscription) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${users_subscription.subscriptionName}</td>
+                <td>${users_subscription.startDate}</td>
+                <td>${users_subscription.endDate}</td>
+                <td>${users_subscription.subscriptionStatus}</td>
+                <td><a href="/api/views/users-subscription/${users_subscription.id}">상세보기</a></td>
+                <td><a href="/api/views/users-subscription/${users_subscription.id}/payment">결제내역</a></td>
+            `;
+                subscriptionList.appendChild(row);
+                const line = document.createElement("hr");
+                subscriptionList.appendChild(line);
+            });
+        }
+
+        // 페이지네이션을 업데이트하는 함수
+        function updatePagination() {
+            const paginationElement = document.getElementById("pagination");
+            paginationElement.innerHTML = "";
+
+            // 이전 페이지 버튼
+            const prevButton = document.createElement("button");
+            prevButton.textContent = "이전 페이지";
+            prevButton.addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchAndDisplaySubscriptions(currentPage);
+                }
+            });
+            paginationElement.appendChild(prevButton);
+
+            // 페이지 번호
+            const pageSpan = document.createElement("span");
+            pageSpan.textContent = `${currentPage} / ${totalPages}`;
+            paginationElement.appendChild(pageSpan);
+
+            // 다음 페이지 버튼
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "다음 페이지";
+            nextButton.addEventListener("click", () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    fetchAndDisplaySubscriptions(currentPage);
+                }
+            });
+            paginationElement.appendChild(nextButton);
+        }
+
+
+        // 초기 페이지 로드 시 구독 내역 가져오기
+        fetchAndDisplaySubscriptions(currentPage);
+
+    });
+
+</script>
+</body>
+
+</html>
