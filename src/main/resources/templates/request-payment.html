@@ -2,21 +2,22 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>결제 요청</title>
+    <title>Todo - 구독 결제 요청</title>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 <body>
+<h1>구독 결제 요청</h1>
+<p>사용자 ID: <span th:text="${usersSubscription.username}"></span></p>
+<p>구독권 이름: <span th:text="${usersSubscription.subscriptionName}"></span></p>
+<p>구독권 설명: <span th:text="${usersSubscription.subscriptionDescription}"></span></p>
+<p>구독권 가격: <span th:text="${usersSubscription.subscriptionPrice}"></span>원</p>
+<p>구독 시작일: <span th:text="${usersSubscription.startDate}"></span></p>
+<p>구독 만료일: <span th:text="${usersSubscription.endDate}"></span></p>
 
-<p>Team ID: <span th:text="${userId}"></span></p>
-<p>Team Name: <span th:text="${usersSubscription.username}"></span></p>
-<p>Team Subscription ID: <span th:text="${usersSubscriptionId}"></span></p>
-<p>Team Subscription Name: <span th:text="${usersSubscription.subscriptionName}"></span></p>
-<p>Start Date: <span th:text="${usersSubscription.startDate}"></span></p>
-<p>End Date: <span th:text="${usersSubscription.endDate}"></span></p>
-<p>Subscription Status: <span th:text="${usersSubscription.subscriptionStatus}"></span></p>
-<h1>결제 요청</h1>
+<p>구독 상태: <span th:text="${usersSubscription.subscriptionStatus}"></span></p>
+
 
 <button onclick="requestPay()">결제하기</button>
 
@@ -26,7 +27,6 @@
     IMP.init('imp15871224');
 
     function requestPay() {
-        var userId = parseInt([[${userId}]]);
         var usersSubscriptionId = parseInt([[${usersSubscriptionId}]]);
         var merchantUid = [[${usersSubscription.merchantUid}]];
         var subscriptionName = [[${usersSubscription.subscriptionName}]];
@@ -39,7 +39,7 @@
                 pg: "kcp",
                 pay_method: "card",
                 merchant_uid: merchantUid,
-                name: subscriptionName,
+                name: "[Todo구독권]" + subscriptionName,
                 amount: subscriptionPrice,
                 buyer_name: username,
             }, function (rsp) {
@@ -58,7 +58,7 @@
             };
 
             //결제 검증
-            fetch(`/api/users/${userId}/subscription/${usersSubscriptionId}/payment/verifyIamport`, {
+            fetch(`/api/users-subscription/${usersSubscriptionId}/payment/verifyIamport`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,11 +80,11 @@
                             paidAmount: rsp.paid_amount,
                             payMethod: rsp.pay_method,
                             applyNum: rsp.apply_num,
-                            payStatus: rsp.pay_status
+                            payStatus: rsp.status
                         };
 
                         //결제 정보 저장
-                        fetch(`/api/users/${userId}/subscription/${usersSubscriptionId}/payment/process`, {
+                        fetch(`/api/users-subscription/${usersSubscriptionId}/payment/complete`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -137,7 +137,7 @@
             };
         }
 
-        fetch(`/api/users/${userId}/subscription/${usersSubscriptionId}/payment/cancelPayment`, {
+        fetch(`/api/users-subscription/${usersSubscriptionId}/payment/cancel`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json; charset=utf-8"

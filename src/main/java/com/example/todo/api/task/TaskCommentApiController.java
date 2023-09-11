@@ -3,7 +3,9 @@ package com.example.todo.api.task;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.task.TaskCommentCreateDto;
 import com.example.todo.dto.task.TaskCommentReadDto;
+import com.example.todo.dto.task.TaskCommentReplyDto;
 import com.example.todo.dto.task.TaskCommentUpdateDto;
+import com.example.todo.service.notification.NotificationService;
 import com.example.todo.service.task.TaskCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,11 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api/team/{teamId}/task/{taskId}/comments")
 @RequiredArgsConstructor
 public class TaskCommentApiController {
     private final TaskCommentService taskCommentService;
+
     @PostMapping
     public ResponseDto createTaskComment(Authentication authentication,
                                          @PathVariable("teamId") Long teamId,
@@ -52,6 +55,21 @@ public class TaskCommentApiController {
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("Task에 댓글이 수정되었습니다.");
+        return responseDto;
+    }
+    //답글 달기
+    @PutMapping("/{commentId}/reply")
+    public ResponseDto addReply(
+            Authentication authentication,
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("taskId") Long taskId,
+            @PathVariable("commentId") Long commentId,
+            TaskCommentReplyDto taskCommentReplyDto) {
+        Long userId = Long.parseLong(authentication.getName());
+        taskCommentService.addReply(userId, teamId, taskId, commentId, taskCommentReplyDto);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글에 답글을 남겼습니다.");
         return responseDto;
     }
 }

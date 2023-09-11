@@ -2,8 +2,8 @@ package com.example.todo.service.subscription;
 
 import com.example.todo.domain.entity.SubscriptionEntity;
 import com.example.todo.domain.repository.SubscriptionRepository;
-import com.example.todo.dto.SubscriptionCreateRequestDto;
-import com.example.todo.dto.SubscriptionResponseDto;
+import com.example.todo.dto.subscription.SubscriptionCreateRequestDto;
+import com.example.todo.dto.subscription.SubscriptionResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

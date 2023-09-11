@@ -76,7 +76,6 @@ public class TeamService {
 //        TeamEntity team = teamReposiotry.findByIdWithPessimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 //        TeamEntity team = teamReposiotry.findByIdWithOptimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
-
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
 
@@ -163,7 +162,7 @@ public class TeamService {
 
         TeamDetailsDto teamDetailsDto = TeamDetailsDto.fromEntity(team);
 
-        List<TaskApiDto> allTasksDtoList = taskApiService.readTasksAll(teamId);
+        List<TaskApiDto> allTasksDtoList = taskApiService.readTasksAll(userId, teamId);
         for (TaskApiDto taskApiDto : allTasksDtoList) {
             teamDetailsDto.getAllTasks().add(taskApiDto);
             if (taskApiDto.getStatus().equals("DONE")) teamDetailsDto.getDoneTasks().add(taskApiDto);

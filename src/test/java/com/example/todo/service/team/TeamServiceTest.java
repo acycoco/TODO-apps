@@ -8,6 +8,7 @@ import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.facade.RedissonLockStockFacade;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -40,10 +43,7 @@ class TeamServiceTest {
     OptimisticLockTeamFacade optimisticLockTeamFacade;
 
     @Autowired
-    LettuceLockTeamFacade lettuceLockTeamFacade;
-
-    @Autowired
-    RedissonLockTeamFacade redissonLockTeamFacade;
+    RedissonLockStockFacade redissonLockStockFacade;
 
     @Autowired
     MemberRepository memberRepository;
@@ -54,8 +54,8 @@ class TeamServiceTest {
     @Autowired
     UserRepository userRepository;
 
-    User testUser;
-
+//    User testUser;
+//
 //    @BeforeEach
 //    void setUp() {
 //        testUser = createUser();
@@ -106,12 +106,8 @@ class TeamServiceTest {
 //            long id = i + 3;
             executorService.submit(() -> {
                 try {
+                    redissonLockStockFacade.joinTeam(user1.getId(), joinDto, 1L);
 //                    optimisticLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
-//                    lettuceLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
-                    redissonLockTeamFacade.joinTeam(user1.getId(), joinDto, 1L);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("e = " + e);
                 } finally {
                     latch.countDown();
                 }
@@ -127,6 +123,15 @@ class TeamServiceTest {
         // then
         assertThat(all.get(0).getParticipantNum()).isEqualTo(100);
         assertThat(members.size()).isEqualTo(100);
+
+        List<Long> list = new ArrayList<>();
+        for (MemberEntity member : members) {
+            list.add(member.getUser().getId());
+        }
+        Collections.sort(list);
+        for (Long l : list) {
+            System.out.println("l = " + l);
+        }
     }
 
     private User createUser() {

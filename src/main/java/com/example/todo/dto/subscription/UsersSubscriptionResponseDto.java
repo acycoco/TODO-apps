@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.subscription;
 
 import com.example.todo.domain.entity.UsersSubscriptionEntity;
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
@@ -17,6 +17,7 @@ public class UsersSubscriptionResponseDto {
     private SubscriptionStatus subscriptionStatus;
     private String username;
     private String subscriptionName;
+    private String subscriptionDescription;
     private String merchantUid;
     private BigDecimal SubscriptionPrice;
 
@@ -28,6 +29,7 @@ public class UsersSubscriptionResponseDto {
         dto.setSubscriptionStatus(entity.getSubscriptionStatus());
         dto.setUsername(entity.getUsers().getUsername());
         dto.setSubscriptionName(entity.getSubscription().getName());
+        dto.setSubscriptionDescription(entity.getSubscription().getDescription());
         dto.setMerchantUid(entity.getMerchantUid());
         dto.setSubscriptionPrice(entity.getSubscriptionPrice());
         return dto;

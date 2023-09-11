@@ -1,6 +1,6 @@
 package com.example.todo.api.Payment;
 
-import com.example.todo.dto.UsersSubscriptionResponseDto;
+import com.example.todo.dto.subscription.UsersSubscriptionResponseDto;
 import com.example.todo.service.subscription.UsersSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -8,28 +8,35 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class PaymentController {
+@RequestMapping("/api/views/users-subscription/{usersSubscriptionId}")
+public class PaymentViewsController {
     private final UsersSubscriptionService usersSubscriptionService;
-    @GetMapping("/api/users/{userId}/subscription/{usersSubscriptionId}/payment")
-    public String showPaymentPage(
-            @PathVariable("userId") Long userId,
+    @GetMapping("/request-payment")
+    public String requestPayment(
             @PathVariable("usersSubscriptionId") Long usersSubscriptionId,
+            Authentication authentication,
             Model model
     ) {
+        Long userId = Long.parseLong(authentication.getName());
         UsersSubscriptionResponseDto usersSubscription = usersSubscriptionService.readUsersSubscription(userId, usersSubscriptionId);
-        model.addAttribute("userId", userId);
-        model.addAttribute("usersSubscriptionId", usersSubscriptionId);
         model.addAttribute("usersSubscription", usersSubscription);
-        return "payment";
+        return "request-payment";
     }
 
-    @GetMapping("/api/choice")
-    public String showChoice(
-
+    @GetMapping("/payment")
+    public String showPaymentDetails(
+            @PathVariable("usersSubscriptionId") Long usersSubscriptionId,
+            Authentication authentication,
+            Model model
     ){
-        return "subscriptionchoice";
+        model.addAttribute("usersSubscriptionId", usersSubscriptionId);
+        return "payment-details";
     }
+
+
+
 }

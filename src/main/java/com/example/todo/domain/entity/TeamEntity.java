@@ -27,7 +27,7 @@ public class TeamEntity extends BaseTimeEntity {
     @ManyToOne
     private User manager;
 
-    @OneToMany
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<MemberEntity> members;
 
 

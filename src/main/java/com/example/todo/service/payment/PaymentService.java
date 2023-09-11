@@ -7,8 +7,8 @@ import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.PaymentRepository;
 import com.example.todo.domain.repository.UsersSubscriptionRepository;
 import com.example.todo.domain.repository.user.UserRepository;
-import com.example.todo.dto.PaymentInfoDto;
-import com.example.todo.dto.PaymentResponseDto;
+import com.example.todo.dto.payment.PaymentInfoDto;
+import com.example.todo.dto.payment.PaymentResponseDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import com.siot.IamportRestClient.IamportClient;
@@ -16,8 +16,8 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,27 +26,22 @@ import java.math.BigDecimal;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final UsersSubscriptionRepository usersSubscriptionRepository;
     private final UserRepository userRepository;
     private final IamportClient iamportClient;
 
-    public PaymentService(PaymentRepository paymentRepository, UsersSubscriptionRepository usersSubscriptionRepository, UserRepository userRepository, IamportClient iamportClient) {
-        this.paymentRepository = paymentRepository;
-        this.usersSubscriptionRepository = usersSubscriptionRepository;
-        this.userRepository = userRepository;
-        this.iamportClient = iamportClient;
-    }
 
     @Transactional
-    public PaymentResponseDto processPayment(PaymentInfoDto paymentInfo, Authentication authentication){
+    public PaymentResponseDto completePayment(PaymentInfoDto paymentInfo, Long userId){
         UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findByMerchantUid(paymentInfo.getMerchantUid())
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USERS_SUBSCRIPTION));
 
         usersSubscription.changeSubscriptionStatus(SubscriptionStatus.ACTIVE);
 
-        User user = userRepository.findById(Long.parseLong(authentication.getName()))
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
         PaymentEntity payment = PaymentEntity.builder()
@@ -102,10 +97,28 @@ public class PaymentService {
         }
         CancelData cancelData = new CancelData(iamportResponse.getResponse().getImpUid(), true);
         cancelData.setChecksum(amount);
-        IamportResponse<Payment> result = iamportClient.cancelPaymentByImpUid(cancelData); //이미 취소된 거래는 response가 null이다.
+        IamportResponse<Payment> result = iamportClient.cancelPaymentByImpUid(cancelData);
 
+        //이미 취소된 거래는 response가 null이다.
         if (result == null){
             throw new TodoAppException(ErrorCode.ALREADY_CANCELED);
         }
+    }
+
+    @Transactional
+    public PaymentResponseDto readPayment(Long userId, Long usersSubscriptionId) {
+        if (!userRepository.existsById(userId))
+            throw new TodoAppException(ErrorCode.NOT_FOUND_USER);
+
+        UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findById(usersSubscriptionId)
+                .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USERS_SUBSCRIPTION));
+
+        if (!userId.equals(usersSubscription.getUsers().getId()))
+            throw new TodoAppException(ErrorCode.NOT_MATCH_USERS_AND_USERS_SUBSCRIPTION);
+
+        PaymentEntity payment = paymentRepository.findByUsersSubscription(usersSubscription)
+                .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_PAYMENT));
+
+        return PaymentResponseDto.fromEntity(payment);
     }
 }

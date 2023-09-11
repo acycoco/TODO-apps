@@ -5,11 +5,17 @@ import com.example.todo.dto.todo.TodoApiDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import com.example.todo.service.todo.TodoApiService;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +25,15 @@ public class TodoApiController {
 
     @PostMapping
     public ResponseDto create(
-            @RequestBody TodoApiDto todoApiDto,
-            Authentication authentication) {
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("dueDate") LocalDate dueDate,
+            @Nullable @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            Authentication authentication) throws IOException {
         Long userId = Long.parseLong(authentication.getName());
-        return service.createTodo(userId,todoApiDto);
+        TodoApiDto todoApiDto = new TodoApiDto().fromParams(title, content, startDate, dueDate);
+        return service.createTodo(userId,todoApiDto, files);
     }
 
     //Todo 상세 조회
@@ -39,15 +50,22 @@ public class TodoApiController {
             @RequestParam(value = "limit", defaultValue = "5") Integer limit) {
         return service.readUserTodoAll(userId, page, limit);
     }
+
     //Todo 수정
     @PutMapping("/{todoId}")
     public ResponseDto update(
             @PathVariable("todoId") Long todoId,
-            @RequestBody TodoApiDto todoApiDto,
-            Authentication authentication) {
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("dueDate") LocalDate dueDate,
+            @Nullable @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            Authentication authentication) throws IOException {
         Long userId = Long.parseLong(authentication.getName());
-        return service.updateTodo(userId, todoId, todoApiDto);
+        TodoApiDto todoApiDto = new TodoApiDto().fromParams(title, content, startDate, dueDate);
+        return service.updateTodo(userId, todoId, todoApiDto, files);
     }
+
     //Todo 삭제
     @DeleteMapping("/{todoId}")
     public ResponseDto delete(

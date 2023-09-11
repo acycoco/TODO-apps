@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.subscription;
 
 
 import com.example.todo.domain.entity.SubscriptionEntity;

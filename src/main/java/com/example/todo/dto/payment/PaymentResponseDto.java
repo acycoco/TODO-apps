@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.payment;
 
 import com.example.todo.domain.entity.PaymentEntity;
 import lombok.Getter;
