@@ -72,9 +72,9 @@ public class TeamService {
     public void joinTeam(Long userId, TeamJoinDto teamJoinDto, Long teamId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
 
-//        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+        TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 //        TeamEntity team = teamReposiotry.findByIdWithPessimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
-        TeamEntity team = teamReposiotry.findByIdWithOptimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
+//        TeamEntity team = teamReposiotry.findByIdWithOptimisticLock(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
 
         if (!team.getJoinCode().equals(teamJoinDto.getJoinCode()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong JoinCode!");
