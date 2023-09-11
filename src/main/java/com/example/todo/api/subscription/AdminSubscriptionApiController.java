@@ -1,5 +1,6 @@
 package com.example.todo.api.subscription;
 
+import com.example.todo.domain.Response;
 import com.example.todo.dto.subscription.SubscriptionCreateRequestDto;
 import com.example.todo.dto.subscription.SubscriptionResponseDto;
 import com.example.todo.service.subscription.SubscriptionService;
@@ -20,45 +21,45 @@ public class AdminSubscriptionApiController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SubscriptionResponseDto> create(
+    public Response<SubscriptionResponseDto> create(
             @Valid @RequestBody SubscriptionCreateRequestDto dto
     ){
 
-        return ResponseEntity.ok(subscriptionService.createSubscription(dto));
+        return Response.success(subscriptionService.createSubscription(dto));
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<SubscriptionResponseDto>> readAll(
+    public Response<Page<SubscriptionResponseDto>> readAll(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "limit", defaultValue = "5") Integer limit
     ){
-        return ResponseEntity.ok(subscriptionService.readAllSubscription(page, limit));
+        return Response.success(subscriptionService.readAllSubscription(page - 1, limit));
     }
 
     @GetMapping("/{subscriptionId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SubscriptionResponseDto> read(
+    public Response<SubscriptionResponseDto> read(
             @PathVariable("subscriptionId") Long subscriptionId
     ){
-        return ResponseEntity.ok(subscriptionService.readSubscription(subscriptionId));
+        return Response.success(subscriptionService.readSubscription(subscriptionId));
     }
 
     @PutMapping("/{subscriptionId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SubscriptionResponseDto> update(
+    public Response<SubscriptionResponseDto> update(
             @PathVariable("subscriptionId") Long subscriptionId,
             @Valid @RequestBody SubscriptionCreateRequestDto dto
     ){
-        return ResponseEntity.ok(subscriptionService.updateSubscription(subscriptionId, dto));
+        return Response.success(subscriptionService.updateSubscription(subscriptionId, dto));
     }
 
     @PutMapping("/{subscriptionId}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SubscriptionResponseDto> updateStatus(
+    public Response<SubscriptionResponseDto> updateStatus(
             @PathVariable("subscriptionId") Long subscriptionId
     ){
-        return ResponseEntity.ok(subscriptionService.updateSubscriptionStatus(subscriptionId));
+        return Response.success(subscriptionService.updateSubscriptionStatus(subscriptionId));
     }
 
 

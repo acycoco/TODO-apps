@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>todo - 구독권 등록</title>
+    <title>todo - 구독권 수정</title>
 </head>
 <body>
-<h1>구독권 등록</h1>
+<h1>구독권 수정</h1>
 <div id="user-container"></div>
 <hr>
 <div>
-    <form id="create-subscription-form">
+    <form id="update-subscription-form">
         <p>
             <label>이름:
                 <input id="name-input" type="text" placeholder="이름">
@@ -22,7 +22,7 @@
         </p>
         <p>
             <label>가격:
-                <input id="price-input" type="number" placeholder="가격">
+                <input id="price-input" type="number" placeholder="최소금액">
             </label>
         </p>
         <p>
@@ -37,7 +37,28 @@
 <hr>
 <script>
 
-    document.getElementById('create-subscription-form').addEventListener('submit', e => {
+    var subscriptionId = parseInt([[${subscriptionId}]]);
+
+    const setItemData = function (subscription) {
+        document.title += ` ${subscription.name}`
+        document.getElementById('name-input').value = subscription.name
+        document.getElementById('desc-input').value = subscription.description
+        document.getElementById('price-input').value = subscription.price
+        document.getElementById('max-member-input').value = subscription.maxMember
+
+    }
+
+    fetch(`/api/admin/subscription/${subscriptionId}`)
+        .then(response => {
+            if (response.ok)
+                return response.json()
+        }).then(data => {
+            data = data.date;
+        setItemData(data)
+    })
+
+
+    document.getElementById('update-subscription-form').addEventListener('submit', e => {
         e.preventDefault()
         // if (getJwt() === null) {
         //     requireLogin()
@@ -50,8 +71,8 @@
                 maxMember: document.getElementById('max-member-input').value
             }
             let id;
-            fetch('/api/admin/subscription', {
-                method: 'post',
+            fetch(`/api/admin/subscription/${subscriptionId}`, {
+                method: 'put',
                 headers: {
                     // 'Authorization': `Bearer ${getJwt()}`,
                     'Content-Type': 'application/json'
@@ -66,7 +87,7 @@
                 id = data.id
 
             }).then(result => {
-                alert('업로드 성공')
+                alert('수정 성공')
                 location.href = `/api/views/admin/subscription/${id}`
             }).catch(e => {
                 console.log(e.message)
