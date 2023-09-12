@@ -140,10 +140,12 @@ public class TeamService {
         TeamEntity team = teamReposiotry.findById(teamId).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_TEAM));
         MemberEntity member = memberRepository.findByTeamAndUser(team, user).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
+        member.setTeam(null);
+        memberRepository.delete(member);
         team.getMembers().remove(member);
+        log.info("part {}", team.getParticipantNum() - 1);
         team.setParticipantNum(team.getParticipantNum() - 1);
         teamReposiotry.save(team);
-        memberRepository.delete(member);
     }
 
 

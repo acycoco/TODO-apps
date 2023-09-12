@@ -1,7 +1,8 @@
-package com.example.todo.service.team;
+package com.example.todo.facade;
 
 import com.example.todo.domain.repository.RedisLockRepository;
 import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

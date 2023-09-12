@@ -2,7 +2,7 @@ package com.example.todo.api.team;
 
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.team.*;
-import com.example.todo.service.team.OptimisticLockTeamFacade;
+import com.example.todo.facade.RedissonLockTeamFacade;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamService teamService;
-    private final OptimisticLockTeamFacade teamServiceFacade;
+    private final RedissonLockTeamFacade redissonLockStockFacade;
 
     @GetMapping
     public String getTeamCreatePage(Authentication authentication) {
@@ -62,8 +62,8 @@ public class TeamController {
                                 @RequestBody @Valid TeamJoinDto teamJoinDto,
                                 @PathVariable("teamId") Long teamId) throws InterruptedException {
         Long userId = Long.parseLong(authentication.getName());
-//        teamService.joinTeam(userId, teamJoinDto, teamId);
-        teamServiceFacade.joinTeam(userId, teamJoinDto, teamId);
+        teamService.joinTeam(userId, teamJoinDto, teamId);
+//        redissonLockStockFacade.joinTeam(userId, teamJoinDto, teamId);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀에 가입이 완료되었습니다.");
         return responseDto;
@@ -100,6 +100,7 @@ public class TeamController {
                                  @PathVariable("teamId") Long teamId) {
         Long userId = Long.parseLong(authentication.getName());
         teamService.leaveTeam(userId, teamId);
+//        redissonLockStockFacade.leaveTeam(userId, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀을 탈퇴하였습니다.");

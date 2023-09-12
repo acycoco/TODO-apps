@@ -1,6 +1,7 @@
-package com.example.todo.service.team;
+package com.example.todo.facade;
 
 import com.example.todo.dto.team.TeamJoinDto;
+import com.example.todo.service.team.TeamService;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

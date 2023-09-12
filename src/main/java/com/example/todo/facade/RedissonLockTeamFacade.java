@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class RedissonLockStockFacade {
+public class RedissonLockTeamFacade {
 
     private final RedissonClient redissonClient;
 
@@ -31,6 +31,26 @@ public class RedissonLockStockFacade {
             }
 
             teamService.joinTeam(userId, teamJoinDto, teamId);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void leaveTeam(Long userId, Long teamId){
+        RLock lock = redissonClient.getLock(teamId.toString());
+
+        try {
+            boolean availabe = lock.tryLock(10, 1, TimeUnit.SECONDS);
+
+            if (!availabe){
+                log.info("lock 획득 실패");
+                return;
+            }
+
+            teamService.leaveTeam(userId, teamId);
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
