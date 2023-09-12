@@ -8,20 +8,12 @@ import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.team.TeamCreateDto;
 import com.example.todo.dto.team.TeamJoinDto;
-import com.example.todo.facade.RedissonLockStockFacade;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.todo.facade.OptimisticLockTeamFacade;
+import com.example.todo.facade.RedissonLockTeamFacade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class TeamServiceTest {
@@ -43,7 +34,7 @@ class TeamServiceTest {
     OptimisticLockTeamFacade optimisticLockTeamFacade;
 
     @Autowired
-    RedissonLockStockFacade redissonLockStockFacade;
+    RedissonLockTeamFacade redissonLockStockFacade;
 
     @Autowired
     MemberRepository memberRepository;
@@ -121,8 +112,9 @@ class TeamServiceTest {
         System.out.println("members.size() = " + members.size());
 
         // then
-        assertThat(all.get(0).getParticipantNum()).isEqualTo(100);
-        assertThat(members.size()).isEqualTo(100);
+        //manager까지 101명
+        assertThat(all.get(0).getParticipantNum()).isEqualTo(101);
+        assertThat(members.size()).isEqualTo(101);
 
         List<Long> list = new ArrayList<>();
         for (MemberEntity member : members) {
@@ -132,6 +124,77 @@ class TeamServiceTest {
         for (Long l : list) {
             System.out.println("l = " + l);
         }
+    }
+
+    @DisplayName("제한된 팀 숫자에 여러명이 동시에 탈퇴하는 테스트")
+    @Test
+    void leaveTeamWithRaceCondition() throws InterruptedException {
+
+        // given
+        User user = createUser();
+        createTeam(user.getId());
+        TeamJoinDto joinDto = TeamJoinDto.builder()
+                .joinCode("참여코드")
+                .build();
+
+        int threadCount = 100;
+        //user 100명 생성 및 팀가입
+        for (int i = 0; i < threadCount; i++) {
+            User user1 = createUser();
+            redissonLockStockFacade.joinTeam(user1.getId(), joinDto, 1L);
+        }
+
+        //manager까지 101명 가입
+        List<User> users = userRepository.findAll();
+        List<TeamEntity> team = teamReposiotry.findAll();
+        List<MemberEntity> members = memberRepository.findAll();
+
+        int participantNumAfterTeamJoin = team.get(0).getParticipantNum();
+        int memberAfterTeamJoin = members.size();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        List<Long> memberList = new ArrayList<>();
+        for (MemberEntity member : members){
+            memberList.add(member.getId());
+        }
+
+        for (Long userId : memberList){
+            if (userId.equals(user.getId())){
+                System.out.println("건너뜁니다");
+                continue;
+            }
+
+            executorService.submit(() -> {
+                try {
+                    redissonLockStockFacade.leaveTeam(userId, 1L);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+
+        latch.await();
+
+        team = teamReposiotry.findAll();
+        members = memberRepository.findAll();
+
+        int participantNumAfterTeamLeave = team.get(0).getParticipantNum();
+        int memberAfterTeamLeave = members.size();
+
+
+        // then
+        assertThat(users.size()).isEqualTo(101);
+        assertThat(participantNumAfterTeamJoin).isEqualTo(101);
+        assertThat(memberAfterTeamJoin).isEqualTo(101);
+
+        //manager 제외하고 team leave
+        assertThat(participantNumAfterTeamLeave).isEqualTo(1);
+        assertThat(memberAfterTeamLeave).isEqualTo(1);
+        assertThat(members.get(0).getId()).isEqualTo(1L);
+
     }
 
     private User createUser() {
@@ -145,7 +208,7 @@ class TeamServiceTest {
         TeamCreateDto createDto = TeamCreateDto.builder()
                 .name("구매팀")
                 .joinCode("참여코드")
-                .participantNum(100)
+                .participantNum(101)
                 .description("구매팀입니다.")
                 .build();
         teamService.createTeam(userId, createDto);
