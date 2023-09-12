@@ -155,10 +155,9 @@ public class TaskApiService {
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeam().getId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
-        //업무를 만든 관리자인지 확인
-        if (!taskApiEntity.getUserId().equals(userId)) {
+        // 팀 관리자 or 업무 담당자
+        if (!taskApiEntity.getUserId().equals(userId) && !taskApiEntity.getWorkerId().equals(userId))
             throw new TodoAppException(ErrorCode.NOT_MATCH_USERID);
-        }
         //맞다면 진행
         // 이전 상태 저장
         String previousStatus = taskApiEntity.getStatus();
@@ -201,10 +200,10 @@ public class TaskApiService {
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeam().getId()))
             throw new TodoAppException(ErrorCode.NOT_MATCH_TEAM_AND_TASK);
-        //업무를 만든 관리자인지 확인
-        if (!taskApiEntity.getUserId().equals(userId)) {
+        // 팀 관리자 or 업무 담당자
+        if (!taskApiEntity.getUserId().equals(userId) && !taskApiEntity.getWorkerId().equals(userId))
             throw new TodoAppException(ErrorCode.NOT_MATCH_USERID);
-        }
+
         //맞다면 진행
         taskApiRepository.deleteById(taskApiEntity.getId());
         return new ResponseDto("업무를 삭제했습니다.");
