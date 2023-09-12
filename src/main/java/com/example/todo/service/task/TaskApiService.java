@@ -4,10 +4,12 @@ import com.example.todo.api.notification.NotificationController;
 import com.example.todo.domain.entity.MemberEntity;
 import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.TaskApiEntity;
+import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
+import com.example.todo.domain.repository.UsersSubscriptionRepository;
 import com.example.todo.domain.repository.user.UserRepository;
 import com.example.todo.dto.NotificationDto;
 import com.example.todo.dto.ResponseDto;
@@ -34,6 +36,7 @@ public class TaskApiService {
     private final NotificationController notificationController;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
+    private final UsersSubscriptionRepository usersSubscriptionRepository;
 
     //조직이 존재하는지 확인하는 메소드
     public TeamEntity getTeamById(Long teamId) {
@@ -65,19 +68,28 @@ public class TaskApiService {
         return false; // 사용자가 해당 팀의 멤버가 아닌 경우 false 반환
     }
 
+    public void isAvailableFunction(TeamEntity teamEntity){
+        if (teamEntity.getParticipantNumMax() > 5 &&
+                !usersSubscriptionRepository.existsByUsersAndSubscriptionStatus(teamEntity.getManager(), SubscriptionStatus.ACTIVE))
+            throw new TodoAppException(ErrorCode.NOT_AVAILABLE_FUNCTION);
+    }
+
     //업무 등록
     public ResponseDto createTask(Long userId, Long teamId, TaskCreateDto taskCreateDto) {
         log.info("TaskApiService createTask1");
         //팀 존재 확인
         TeamEntity teamEntity = getTeamById(teamId);
 
+        //기능을 사용할 수 있는지 확인
+        isAvailableFunction(teamEntity);
+
         TaskApiEntity taskApiEntity = new TaskApiEntity();
         //조직이 존재하는지 확인
-        getTeamById(teamId);
         // 사용자가 해당 팀의 멤버인지 확인
         if (!isMemberOfTeam(userId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
 
         // 담당자 멤버 존재 확인
+        log.info("{}", taskCreateDto.getWorker());
         User worker = userRepository.findByUsername(taskCreateDto.getWorker()).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
         Long workerUserId = worker.getId();
         if (!isMemberOfTeam(workerUserId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
@@ -150,7 +162,9 @@ public class TaskApiService {
 
     //업무 수정
     public ResponseDto updateTask(Long userId, Long teamId, Long taskId, TaskApiDto taskApiDto) {
-        getTeamById(teamId);
+        TeamEntity teamEntity = getTeamById(teamId);
+        //기능을 사용할 수 있는지 확인
+        isAvailableFunction(teamEntity);
         TaskApiEntity taskApiEntity = getTaskById(taskId);
         //대상 업무가 대상 팀의 업무가 맞는지
         if (!teamId.equals(taskApiEntity.getTeam().getId()))
@@ -194,7 +208,9 @@ public class TaskApiService {
 
     //업무 삭제
     public ResponseDto deleteTask(Long userId, Long teamId, Long taskId) {
-        getTeamById(teamId);
+        TeamEntity teamEntity = getTeamById(teamId);
+        //기능을 사용할 수 있는지 확인
+        isAvailableFunction(teamEntity);
         //업무 존재 확인
         TaskApiEntity taskApiEntity = getTaskById(taskId);
         //대상 업무가 대상 팀의 업무가 맞는지
