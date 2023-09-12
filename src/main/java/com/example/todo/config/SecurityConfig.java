@@ -34,9 +34,10 @@ public class SecurityConfig {
                         .permitAll())
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/views/login")
+                        .successHandler(oAuth2SuccessHandler)
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserServiceImpl))
-                        .successHandler(oAuth2SuccessHandler))
+                )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .apply(myCustomDsl);
