@@ -2,7 +2,7 @@ package com.example.todo.api.team;
 
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.team.*;
-import com.example.todo.facade.RedissonLockTeamFacade;
+//import com.example.todo.facade.RedissonLockTeamFacade;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamService teamService;
-    private final RedissonLockTeamFacade redissonLockStockFacade;
+//    private final RedissonLockTeamFacade redissonLockStockFacade;
 
     @GetMapping
     public String getTeamCreatePage(Authentication authentication) {
