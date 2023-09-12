@@ -58,13 +58,13 @@ public class TaskCommentApiController {
         return responseDto;
     }
     //답글 달기
-    @PutMapping("/{commentId}/reply")
+    @PostMapping("/{commentId}/reply")
     public ResponseDto addReply(
             Authentication authentication,
             @PathVariable("teamId") Long teamId,
             @PathVariable("taskId") Long taskId,
             @PathVariable("commentId") Long commentId,
-            TaskCommentReplyDto taskCommentReplyDto) {
+            @RequestBody TaskCommentReplyDto taskCommentReplyDto) {
         Long userId = Long.parseLong(authentication.getName());
         taskCommentService.addReply(userId, teamId, taskId, commentId, taskCommentReplyDto);
 
