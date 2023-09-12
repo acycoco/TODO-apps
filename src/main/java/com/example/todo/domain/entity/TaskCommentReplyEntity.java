@@ -2,24 +2,22 @@ package com.example.todo.domain.entity;
 
 import com.example.todo.domain.entity.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
-
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
-public class TaskCommentEntity extends BaseTimeEntity {
+@Data
+public class TaskCommentReplyEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private User writer;
-    private String content;
-    @OneToMany(mappedBy = "taskCommentEntity", fetch = FetchType.EAGER)
-    private List<TaskCommentReplyEntity> replies;
+    private String reply;
+
     @ManyToOne
     private TaskApiEntity taskApiEntity;
+
+    @ManyToOne
+    private TaskCommentEntity taskCommentEntity;
 }
