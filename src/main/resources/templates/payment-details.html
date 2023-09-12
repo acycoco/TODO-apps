@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo - 결제 상세 내역</title>
+</head>
+<body>
+<h1 id="title-elem">결제 내역 상세 정보</h1>
+<hr>
+<div id="payment-container">
+    <h3>결제 금액: <span id="amount-elem"></span></h3>
+    <h3>결제 상태: <span id="pay-status-elem"></span></h3>
+    <h3>결제 수단: <span id="pay-method-elem"></span></h3>
+    <h3>결제 일시: <span id="payment-date-elem"></span></h3>
+</div>
+</body>
+<script>
+    var usersSubscriptionId = parseInt([[${usersSubscriptionId}]]);
+
+    fetch(`/api/users-subscription/${usersSubscriptionId}/payment`)
+        .then(response => response.json())
+        .then(data => {
+            data = data.date;
+            // 결제 내역 상세 정보를 가져와서 화면에 표시
+            console.log(data);
+            document.getElementById("title-elem").innerText = "결제 내역 상세 정보";
+            document.getElementById("amount-elem").innerText = data.amount;
+            document.getElementById("pay-status-elem").innerText = data.payStatus;
+            document.getElementById("pay-method-elem").innerText = data.payMethod;
+            document.getElementById("payment-date-elem").innerText = data.paymentDate;
+        })
+        .catch(error => console.error('결제 내역 상세 정보 요청 오류:', error));
+
+</script>
+</html>

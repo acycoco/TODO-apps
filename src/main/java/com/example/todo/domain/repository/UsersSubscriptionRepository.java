@@ -3,6 +3,8 @@ package com.example.todo.domain.repository;
 import com.example.todo.domain.entity.UsersSubscriptionEntity;
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import com.example.todo.domain.entity.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 public interface UsersSubscriptionRepository extends JpaRepository<UsersSubscriptionEntity, Long> {
     List<UsersSubscriptionEntity> findAllByUsers(User user);
+    Page<UsersSubscriptionEntity> findAllByUsers(User user, Pageable pageable);
     Optional<UsersSubscriptionEntity> findByUsersAndSubscriptionStatus(User user, SubscriptionStatus status);
     Boolean existsByUsersAndSubscriptionStatus(User user, SubscriptionStatus status);
     Optional<UsersSubscriptionEntity> findByMerchantUid(String merchantUid);
