@@ -55,13 +55,13 @@ public class NotificationController {
         }
     }
     //개별 구독 페이지
-    @GetMapping(value = "/subscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@PathVariable Long id, final HttpServletResponse response) {
-        return notificationService.subscribe(id, response);
+    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable Long userId, final HttpServletResponse response) {
+        return notificationService.subscribe(userId, response);
     }
     // 클라이언트가 데이터를 수신하기 위해 사용할 엔드포인트
-    @PostMapping("/sendData/{id}")
-    public void sendData(@PathVariable Long id) {
-        notificationService.notify(id, "data");
+    @PostMapping("/sendData/{userId}")
+    public void sendData(@PathVariable Long userId) {
+        notificationService.notify(userId, "data");
     }
 }
