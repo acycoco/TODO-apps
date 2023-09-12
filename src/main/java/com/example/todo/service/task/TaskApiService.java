@@ -126,7 +126,7 @@ public class TaskApiService {
         getTeamById(teamId);
         //업무가 존재하는지 확인
         Optional<TaskApiEntity> optionalTaskApiEntity = taskApiRepository.findById(taskId);
-        if (optionalTaskApiEntity.isPresent())
+        if (optionalTaskApiEntity.isPresent() && optionalTaskApiEntity.get().getTeam().getId().equals(teamId))
             return TaskApiDto.fromEntity(optionalTaskApiEntity.get());
         else throw new TodoAppException(ErrorCode.NOT_FOUND_TASK);
     }
