@@ -1,9 +1,11 @@
 package com.example.todo.api.task;
 
+import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.task.TaskAndTeamDto;
 import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.dto.task.TaskCreateDto;
+import com.example.todo.dto.team.TeamOverviewDto;
 import com.example.todo.service.task.TaskApiService;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,11 +50,11 @@ public class TaskApiController {
         return service.readTasksAll(userId, teamId);
     }
 
-    //개별 업무 조회
+    // 팀 내 개별 업무 조회
     @GetMapping("/myTasks")
-    public List<TaskAndTeamDto> getMyTasks(Authentication authentication) {
+    public List<TaskApiDto>  getMyTasksInATeam(Authentication authentication, @PathVariable("teamId") Long teamId) {
         Long userId = Long.parseLong(authentication.getName());
-        return service.getMyTasks(userId);
+        return service.getMyTasksInATeam(userId, teamId);
     }
 
     //수정

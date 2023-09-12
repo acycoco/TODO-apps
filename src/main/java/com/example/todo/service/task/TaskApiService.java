@@ -14,6 +14,7 @@ import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.task.TaskAndTeamDto;
 import com.example.todo.dto.task.TaskApiDto;
 import com.example.todo.dto.task.TaskCreateDto;
+import com.example.todo.dto.team.TeamOverviewDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,7 @@ public class TaskApiService {
         User worker = userRepository.findByUsername(taskCreateDto.getWorker()).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
         Long workerUserId = worker.getId();
         if (!isMemberOfTeam(workerUserId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
-        MemberEntity workerMember = memberRepository.findByTeamAndUser(teamEntity,worker).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
+        MemberEntity workerMember = memberRepository.findByTeamAndUser(teamEntity, worker).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
 
         taskApiEntity.setUserId(userId);
         taskApiEntity.setTeam(teamEntity);
@@ -131,27 +132,18 @@ public class TaskApiService {
         return taskApiDtoList;
     }
 
-    // 내 업무 조회
-    public List<TaskAndTeamDto> getMyTasks(Long userId) {
-        List<TaskAndTeamDto> myTasks = new ArrayList<>();
+    // 내 전체 업무 조회
+    public Map<TeamOverviewDto, List<TaskApiDto>> getMyTasks(Long userId) {
+        Map<TeamOverviewDto, List<TaskApiDto>> myTasks = new HashMap<>();
 
-        // 사용자가 속한 모든 팀 조회
-        List<TeamEntity> teams = teamReposiotry.findByMembersUserId(userId);
-
-        for (TeamEntity team : teams) {
-            // 팀에서 사용자의 업무 조회
-            List<TaskApiEntity> tasks = taskApiRepository.findByTeamIdAndUserId(team.getId(), userId);
-
-            for (TaskApiEntity entity : tasks) {
-                TaskAndTeamDto taskAndTeamDto = new TaskAndTeamDto();
-                taskAndTeamDto.setTeamId(team.getId());
-                taskAndTeamDto.setTeamName(team.getName());
-                taskAndTeamDto.setTaskId(entity.getId());
-                taskAndTeamDto.setTaskName(entity.getTaskName());
-                taskAndTeamDto.setTaskDesc(entity.getTaskDesc());
-                taskAndTeamDto.setStatus(entity.getStatus());
-                myTasks.add(taskAndTeamDto);
-            }
+        List<MemberEntity> memberEntities = memberRepository.findAllByUserId(userId);
+        for (MemberEntity memberEntity : memberEntities) {
+            TeamEntity teamEntity = memberEntity.getTeam();
+            List<TaskApiEntity> taskApiEntityList = taskApiRepository.findAllByTeamIdAndUserId(teamEntity.getId(), userId);
+            List<TaskApiDto> taskApiDtoList = new ArrayList<>();
+            for (TaskApiEntity taskApiEntity : taskApiEntityList)
+                if (!taskApiEntity.getStatus().equals("완료")) taskApiDtoList.add(TaskApiDto.fromEntity(taskApiEntity));
+            myTasks.put(TeamOverviewDto.fromEntity(teamEntity), taskApiDtoList);
         }
         return myTasks;
     }
@@ -216,5 +208,17 @@ public class TaskApiService {
         //맞다면 진행
         taskApiRepository.deleteById(taskApiEntity.getId());
         return new ResponseDto("업무를 삭제했습니다.");
+    }
+
+    // 팀내 내 업무 조회
+    public List<TaskApiDto> getMyTasksInATeam(Long userId, Long teamId) {
+        List<TaskApiDto> myTasksInATeam = new ArrayList<>();
+        getTeamById(teamId);
+        if (!isMemberOfTeam(userId, teamId)) throw new TodoAppException(ErrorCode.NOT_FOUND_MEMBER);
+        List<TaskApiEntity> taskApiEntityList = taskApiRepository.findAllByTeamIdAndUserId(teamId, userId);
+        for (TaskApiEntity taskApiEntity : taskApiEntityList)
+            if (!taskApiEntity.getStatus().equals("완료")) myTasksInATeam.add(TaskApiDto.fromEntity(taskApiEntity));
+        return myTasksInATeam;
+
     }
 }
