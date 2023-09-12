@@ -5,6 +5,7 @@ import com.example.todo.domain.entity.MemberEntity;
 import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.TaskApiEntity;
 import com.example.todo.domain.entity.user.User;
+import com.example.todo.domain.repository.MemberRepository;
 import com.example.todo.domain.repository.TaskApiRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
 import com.example.todo.domain.repository.user.UserRepository;
@@ -12,18 +13,12 @@ import com.example.todo.dto.NotificationDto;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.task.TaskAndTeamDto;
 import com.example.todo.dto.task.TaskApiDto;
+import com.example.todo.dto.task.TaskCreateDto;
 import com.example.todo.exception.ErrorCode;
 import com.example.todo.exception.TodoAppException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,6 +32,8 @@ public class TaskApiService {
     private final TeamReposiotry teamReposiotry;
     private final NotificationController notificationController;
     private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
+
     //조직이 존재하는지 확인하는 메소드
     public TeamEntity getTeamById(Long teamId) {
         //해당 Id를 가진 Entity가 존재하는지?
@@ -53,6 +50,7 @@ public class TaskApiService {
             return optionalTaskApiEntity.get();
         else throw new TodoAppException(ErrorCode.NOT_FOUND_TASK);
     }
+
     //멤버인지 확인
     public boolean isMemberOfTeam(Long userId, Long teamId) {
         TeamEntity teamEntity = getTeamById(teamId);
@@ -67,7 +65,7 @@ public class TaskApiService {
     }
 
     //업무 등록
-    public ResponseDto createTask(Long userId, Long teamId, TaskApiDto taskApiDto) {
+    public ResponseDto createTask(Long userId, Long teamId, TaskCreateDto taskCreateDto) {
         log.info("TaskApiService createTask1");
         //팀 존재 확인
         TeamEntity teamEntity = getTeamById(teamId);
@@ -76,24 +74,30 @@ public class TaskApiService {
         //조직이 존재하는지 확인
         getTeamById(teamId);
         // 사용자가 해당 팀의 멤버인지 확인
-        if (!isMemberOfTeam(userId, teamId)) {
-            throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
-        }
+        if (!isMemberOfTeam(userId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
+
+        // 담당자 멤버 존재 확인
+        User worker = userRepository.findByUsername(taskCreateDto.getWorker()).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_USER));
+        Long workerUserId = worker.getId();
+        if (!isMemberOfTeam(workerUserId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
+        MemberEntity workerMember = memberRepository.findByTeamAndUser(teamEntity,worker).orElseThrow(() -> new TodoAppException(ErrorCode.NOT_FOUND_MEMBER));
+
         taskApiEntity.setUserId(userId);
         taskApiEntity.setTeam(teamEntity);
-        taskApiEntity.setTaskName(taskApiDto.getTaskName());
-        taskApiEntity.setTaskDesc(taskApiDto.getTaskDesc());
-        taskApiEntity.setStartDate(taskApiDto.getStartDate());
-        taskApiEntity.setDueDate(taskApiDto.getDueDate());
+        taskApiEntity.setTaskName(taskCreateDto.getTaskName());
+        taskApiEntity.setTaskDesc(taskCreateDto.getTaskDesc());
+        taskApiEntity.setStartDate(taskCreateDto.getStartDate());
+        taskApiEntity.setDueDate(taskCreateDto.getDueDate());
+        taskApiEntity.setMember(workerMember);
         //현재 날짜 추가
         LocalDate currentDate = LocalDate.now();
 
         taskApiEntity.setStatus("진행중");
         //현재날짜가 아직 startDate 이전이면 진행예정
-        if (taskApiDto.getStartDate().isAfter(currentDate)) {
+        if (taskCreateDto.getStartDate().isAfter(currentDate)) {
             taskApiEntity.setStatus("진행예정");
         } // 현재날짜가 dueDate를 지났으면 완료
-        else if (taskApiDto.getDueDate().isBefore(currentDate)) {
+        else if (taskCreateDto.getDueDate().isBefore(currentDate)) {
             taskApiEntity.setStatus("완료");
         }
         taskApiEntity = taskApiRepository.save(taskApiEntity);
@@ -101,7 +105,7 @@ public class TaskApiService {
     }
 
     //업무 상세 조회
-        public TaskApiDto readTask(Long teamId, Long taskId, Long userId) {
+    public TaskApiDto readTask(Long teamId, Long taskId, Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new TodoAppException(ErrorCode.NOT_FOUND_USER);
 
@@ -119,11 +123,14 @@ public class TaskApiService {
         if (optionalUser.isEmpty()) throw new TodoAppException(ErrorCode.NOT_FOUND_USER);
         //조직이 존재하는지 확인
         getTeamById(teamId);
+        // 멤버 여부 확인
+        if (isMemberOfTeam(userId, teamId)) throw new TodoAppException(ErrorCode.NOT_MATCH_MEMBERID);
         List<TaskApiEntity> taskApiEntities = taskApiRepository.findAllByTeamId(teamId);
         List<TaskApiDto> taskApiDtoList = new ArrayList<>();
         for (TaskApiEntity taskApiEntity : taskApiEntities) taskApiDtoList.add(TaskApiDto.fromEntity(taskApiEntity));
         return taskApiDtoList;
     }
+
     // 내 업무 조회
     public List<TaskAndTeamDto> getMyTasks(Long userId) {
         List<TaskAndTeamDto> myTasks = new ArrayList<>();

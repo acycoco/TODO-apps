@@ -3,6 +3,7 @@ package com.example.todo.api.task;
 import com.example.todo.dto.ResponseDto;
 import com.example.todo.dto.task.TaskAndTeamDto;
 import com.example.todo.dto.task.TaskApiDto;
+import com.example.todo.dto.task.TaskCreateDto;
 import com.example.todo.service.task.TaskApiService;
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +23,10 @@ public class TaskApiController {
     @PostMapping
     public ResponseDto create(
             @PathVariable("teamId") Long teamId,
-            @RequestBody TaskApiDto taskApiDto,
+            @RequestBody TaskCreateDto taskCreateDto,
             Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
-        return service.createTask(userId, teamId, taskApiDto);
+        return service.createTask(userId, teamId, taskCreateDto);
     }
 
 
