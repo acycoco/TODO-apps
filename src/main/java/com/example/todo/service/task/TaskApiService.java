@@ -4,6 +4,7 @@ import com.example.todo.api.notification.NotificationController;
 import com.example.todo.domain.entity.MemberEntity;
 import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.entity.TaskApiEntity;
+import com.example.todo.domain.entity.UsersSubscriptionEntity;
 import com.example.todo.domain.entity.enums.SubscriptionStatus;
 import com.example.todo.domain.entity.user.User;
 import com.example.todo.domain.repository.MemberRepository;
@@ -71,9 +72,12 @@ public class TaskApiService {
     }
 
     public void isAvailableFunction(TeamEntity teamEntity){
-        if (teamEntity.getParticipantNumMax() > FREE_TEAM_PARTICIPANT_NUM &&
-                !usersSubscriptionRepository.existsByUsersAndSubscriptionStatus(teamEntity.getManager(), SubscriptionStatus.ACTIVE))
-            throw new TodoAppException(ErrorCode.NOT_AVAILABLE_FUNCTION);
+        if (teamEntity.getParticipantNumMax() > FREE_TEAM_PARTICIPANT_NUM) {
+            UsersSubscriptionEntity usersSubscription = usersSubscriptionRepository.findByUsersAndSubscriptionStatus(teamEntity.getManager(), SubscriptionStatus.ACTIVE)
+                    .orElseThrow(() -> new TodoAppException(ErrorCode.NOT_AVAILABLE_FUNCTION));
+            if (usersSubscription.getSubscription().getMaxMember() < teamEntity.getParticipantNumMax())
+                throw new TodoAppException(ErrorCode.NOT_AVAILABLE_FUNCTION);
+        }
     }
 
     //업무 등록
