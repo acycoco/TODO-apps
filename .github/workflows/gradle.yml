@@ -31,11 +31,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Set yml
-      run: |
-        mkdir -p src/main/resources
-        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-        find src
+#    - name: Set yml
+#      run: |
+#        mkdir -p src/main/resources
+#        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+#        find src
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
@@ -44,7 +44,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: clean build -x test
+        arguments: clean build
 
     # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
