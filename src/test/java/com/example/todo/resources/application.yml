@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    include: oauth
+  datasource:
+    url: jdbc:h2:mem:testdb;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dbsquddlfz
+    password: 1234
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+jwt:
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+
+iamport:
+  key: 4876044616056757
+  secret: y6vqvKNj6XW8TVrRAOEHddHWXfIEMbC0eR4EkzHvlXnMJ0U52KJdHpeXTm7JYQNqcV9HBCOLG0wzJ6sM
+
