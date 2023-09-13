@@ -14,7 +14,7 @@ public class MailApiController {
     private final MailService mailService;
 
     @PostMapping("/mail")
-    public void mail() {
+    public void mail() throws InterruptedException {
         mailService.mailSend();
     }
 //    @PostMapping("/mail")
