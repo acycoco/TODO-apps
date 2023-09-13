@@ -1,13 +1,13 @@
 package com.example.todo.api.team;
 
 import com.example.todo.dto.ResponseDto;
-import com.example.todo.dto.team.TeamCreateDto;
-import com.example.todo.dto.team.TeamJoinDto;
-import com.example.todo.dto.team.TeamUpdateDto;
+import com.example.todo.dto.team.*;
+//import com.example.todo.facade.RedissonLockTeamFacade;
 import com.example.todo.service.team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +17,30 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TeamController {
     private final TeamService teamService;
+//    private final RedissonLockTeamFacade redissonLockStockFacade;
 
     @GetMapping
-    public String getTeamGeneratePage(Authentication authentication) {
-        return "team-generate.html";
+    public String getTeamCreatePage(Authentication authentication) {
+        return "team-create.html";
     }
 
     @GetMapping("/search-page")
     public String getTeamSearchPage() {
-        return "team-generate.html";
+        return "team-search.html";
+    }
+
+    @GetMapping("/search?keyword=")
+    public Page<TeamOverviewDto> searchTeam(@RequestParam("keyword") String keyword,
+                                            @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                            @RequestParam(value = "limit", defaultValue = "30") Integer limit) {
+        return teamService.searchTeam(keyword, page, limit);
+    }
+
+    @GetMapping("/{teamId}")
+    public TeamDetailsDto getTeamPage(Authentication authentication,
+                                         @PathVariable("teamId") Long teamId) {
+        Long userId = Long.parseLong(authentication.getName());
+        return teamService.getTeamDetails(userId, teamId);
     }
 
     @PostMapping
@@ -40,17 +55,15 @@ public class TeamController {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("새로운 팀 등록이 완료되었습니다.");
         return responseDto;
-
     }
-
 
     @PostMapping("/{teamId}/member")
     public ResponseDto joinTeam(Authentication authentication,
                                 @RequestBody @Valid TeamJoinDto teamJoinDto,
-                                @PathVariable("teamId") Long teamId) {
+                                @PathVariable("teamId") Long teamId) throws InterruptedException {
         Long userId = Long.parseLong(authentication.getName());
         teamService.joinTeam(userId, teamJoinDto, teamId);
-
+//        redissonLockStockFacade.joinTeam(userId, teamJoinDto, teamId);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀에 가입이 완료되었습니다.");
         return responseDto;
@@ -87,6 +100,7 @@ public class TeamController {
                                  @PathVariable("teamId") Long teamId) {
         Long userId = Long.parseLong(authentication.getName());
         teamService.leaveTeam(userId, teamId);
+//        redissonLockStockFacade.leaveTeam(userId, teamId);
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("팀을 탈퇴하였습니다.");

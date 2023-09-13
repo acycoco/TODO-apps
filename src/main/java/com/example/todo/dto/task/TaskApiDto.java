@@ -16,6 +16,7 @@ public class TaskApiDto {
     private LocalDate startDate;
     @NotNull(message = "마감일을 작성해주세요.")
     private LocalDate dueDate;
+    private String worker;
     private String status;
 
     public static TaskApiDto fromEntity(TaskApiEntity entity) {
@@ -26,6 +27,7 @@ public class TaskApiDto {
         taskApiDto.setStartDate(entity.getStartDate());
         taskApiDto.setDueDate(entity.getDueDate());
         taskApiDto.setStatus(entity.getStatus());
+        taskApiDto.setWorker(entity.getMember().getUser().getUsername());
         return taskApiDto;
     }
 }

@@ -5,18 +5,21 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Entity
 @Getter
 @Setter
-public class TaskCommentEntity {
+public class TaskCommentEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private User writer;
     private String content;
-
+    @OneToMany(mappedBy = "taskCommentEntity", fetch = FetchType.EAGER)
+    private List<TaskCommentReplyEntity> replies;
     @ManyToOne
     private TaskApiEntity taskApiEntity;
 }

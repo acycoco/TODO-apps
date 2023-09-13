@@ -25,4 +25,8 @@ public class TaskApiEntity {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private TeamEntity team;
+
+    public Long getWorkerId() {
+        return member.getUser().getId();
+    }
 }

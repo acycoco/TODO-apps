@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todo - 구독권 등록</title>
+</head>
+<body>
+<h1>구독권 등록</h1>
+<div id="user-container"></div>
+<hr>
+<div>
+    <form id="create-subscription-form">
+        <p>
+            <label>이름:
+                <input id="name-input" type="text" placeholder="이름">
+            </label>
+        </p>
+        <p>
+            <label>설명:
+                <textarea id="desc-input"></textarea>
+            </label>
+        </p>
+        <p>
+            <label>가격:
+                <input id="price-input" type="number" placeholder="가격">
+            </label>
+        </p>
+        <p>
+            <label>최대인원:
+                <input id="max-member-input" type="number" placeholder="최대인원">
+            </label>
+        </p>
+        <br>
+        <input type="submit" value="등록">
+    </form>
+</div>
+<hr>
+<script>
+
+    document.getElementById('create-subscription-form').addEventListener('submit', e => {
+        e.preventDefault()
+        // if (getJwt() === null) {
+        //     requireLogin()
+        // }
+        // else {
+            const data = {
+                name: document.getElementById('name-input').value,
+                description: document.getElementById('desc-input').value,
+                price: document.getElementById('price-input').value,
+                maxMember: document.getElementById('max-member-input').value
+            }
+            let id;
+            fetch('/api/admin/subscription', {
+                method: 'post',
+                headers: {
+                    // 'Authorization': `Bearer ${getJwt()}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            }).then(response => {
+                if (response.ok)
+                    return response.json()
+                else throw new Error(response.status.toString())
+            }).then(data => {
+                data = data.date;
+                id = data.id
+
+            }).then(result => {
+                alert('업로드 성공')
+                location.href = `/api/views/admin/subscription/${id}`
+            }).catch(e => {
+                console.log(e.message)
+                alert(e.message)
+            })
+        // }
+    })
+</script>
+</body>
+</html>

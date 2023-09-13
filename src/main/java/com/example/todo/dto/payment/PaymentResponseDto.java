@@ -1,4 +1,4 @@
-package com.example.todo.dto;
+package com.example.todo.dto.payment;
 
 import com.example.todo.domain.entity.PaymentEntity;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class PaymentResponseDto {
     private String payMethod;
     private LocalDateTime paymentDate;
     private Long userId;
-    private Long teamSubscriptionId;
+    private Long userSubscriptionId;
 
     public static PaymentResponseDto fromEntity(PaymentEntity entity){
         PaymentResponseDto dto = new PaymentResponseDto();
@@ -30,7 +30,7 @@ public class PaymentResponseDto {
         dto.setPayMethod(entity.getPayMethod());
         dto.setPaymentDate(entity.getPaymentDate());
         dto.setUserId(entity.getUser().getId());
-        dto.setTeamSubscriptionId(entity.getTeamSubscription().getId());
+        dto.setUserSubscriptionId(entity.getUsersSubscription().getId());
         return dto;
     }
 }

@@ -1,9 +1,12 @@
 package com.example.todo.domain.entity.user;
 
+import com.example.todo.domain.entity.UsersSubscriptionEntity;
 import com.example.todo.domain.entity.enums.Role;
 import com.example.todo.dto.user.request.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +26,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "users")
+    private List<UsersSubscriptionEntity> usersSubscriptions;
+
     @Builder
     public User(final String username, final String password, final String profileImage, final String phone,
                 final Role role) {
@@ -37,5 +43,10 @@ public class User {
         this.password = password;
         this.phone = updateDto.getPhone();
         this.profileImage = profileImage;
+    }
+
+    public User update(String picture) {
+        this.profileImage = picture;
+        return this;
     }
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo - 구독권 상세보기</title>
+</head>
+<body>
+<h1 id="title-elem">구독권 상세보기</h1>
+<hr>
+<div id="subscription-container">
+    <h3>이름: <span id="name-elem"></span></h3>
+    <h3>설명: <span id="desc-elem"></span></h3>
+    <h3>가격: <span id="price-elem"></span></h3>
+    <h3>최대인원: <span id="max-member-elem"></span></h3>
+    <h3>활성화 상태: <span id="status-elem"></span></h3>
+</div>
+</body>
+<div>
+    <a href="/api/views/admin/subscription">구독권 목록 보기</a>
+</div>
+<div>
+    <a th:href="@{/api/views/admin/update-subscription/{subscriptionId}(subscriptionId=${subscriptionId})}">구독권 수정</a>
+</div>
+
+<script>
+    var subscriptionId = parseInt([[${subscriptionId}]]);
+
+    fetch(`/api/admin/subscription/${subscriptionId}`)
+        .then(response => response.json())
+        .then(data => {
+            data = data.date;
+            // 결제 내역 상세 정보를 가져와서 화면에 표시
+            console.log(data);
+            document.getElementById("title-elem").innerText = "구독권 상세 정보";
+            document.getElementById("name-elem").innerText = data.name;
+            document.getElementById("desc-elem").innerText = data.description
+            document.getElementById("price-elem").innerText = data.price;
+            document.getElementById("max-member-elem").innerText = data.maxMember;
+            document.getElementById('status-elem').innerText = data.status ? "활성화" : "비활성화"
+        })
+        .catch(error => console.error('구독권 상세 정보 요청 오류:', error));
+
+</script>
+</html>
