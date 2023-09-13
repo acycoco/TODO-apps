@@ -19,6 +19,7 @@ public enum ErrorCode {
     ALREADY_CANCELED(BAD_REQUEST, "이미 환불된 결제입니다."),
     EXCEED_ALLOWED_TEAM_MEMBERS(BAD_REQUEST, "허용된 최대인원을 초과했습니다."),
     ALREADY_ACTIVE_USERS_SUBSCRIPTION(BAD_REQUEST, "이미 구독중인 구독권이 있습니다."),
+    NOT_ALLOWED_MESSAGE(BAD_REQUEST,"본인에게 메시지를 남길 수 없습니다."),
     NOT_AVAILABLE_FUNCTION(BAD_REQUEST, "기능을 사용할 수 없습니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다."),

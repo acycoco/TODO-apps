@@ -1,13 +1,9 @@
 package com.example.todo.service.notification;
 
-import com.example.todo.domain.entity.TaskApiEntity;
-import com.example.todo.domain.entity.TaskCommentEntity;
-import com.example.todo.domain.entity.TeamEntity;
 import com.example.todo.domain.repository.NotificationRepository;
 import com.example.todo.domain.repository.TaskCommentRepository;
 import com.example.todo.domain.repository.TeamReposiotry;
-import com.example.todo.exception.ErrorCode;
-import com.example.todo.exception.TodoAppException;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +18,6 @@ public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     private final NotificationRepository notificationRepository;
-    private final TaskCommentRepository taskCommentRepository;
-    private final TeamReposiotry teamRepository;
     // 구독하는 클라이언트 아이디에 대한 SseEmitter를 생성하여 반환
     public SseEmitter subscribe(Long userId, final HttpServletResponse response) {
         SseEmitter emitter = createEmitter(userId);
