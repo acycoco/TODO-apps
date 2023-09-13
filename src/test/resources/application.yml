@@ -38,6 +38,6 @@ jwt:
   secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
 
 iamport:
-  key: ${IAM_KEY}
-  secret: ${IAM_SECRET}
+  key: 1234567891234567
+  secret: a1v22b3422c3ASFASDFERWR1234134235erwe124qwqewrwer2341234erwerwqeqwr
 
