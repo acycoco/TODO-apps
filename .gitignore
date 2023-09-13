@@ -42,6 +42,6 @@ out/
 
 
 ### yml oauth
-application.yml
-application-oauth.yml
+#application.yml
+#application-oauth.yml
 
