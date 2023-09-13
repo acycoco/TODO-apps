@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.time.LocalDate;
 
+import static com.example.todo.service.team.TeamService.FREE_TEAM_PARTICIPANT_NUM;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class TaskApiService {
     }
 
     public void isAvailableFunction(TeamEntity teamEntity){
-        if (teamEntity.getParticipantNumMax() > 5 &&
+        if (teamEntity.getParticipantNumMax() > FREE_TEAM_PARTICIPANT_NUM &&
                 !usersSubscriptionRepository.existsByUsersAndSubscriptionStatus(teamEntity.getManager(), SubscriptionStatus.ACTIVE))
             throw new TodoAppException(ErrorCode.NOT_AVAILABLE_FUNCTION);
     }
