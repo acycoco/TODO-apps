@@ -50,6 +50,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
+          gradle-version: 8.2.1 # 사용하려는 Gradle 버전을 여기에 명시
           arguments: clean build -x test
 #          arguments: build -x test
 
